@@ -7,6 +7,7 @@ import base64
 import re
 from datetime import datetime
 import google_sheets
+from select import select
 
 
 def del_quote(text, quote_str):
@@ -75,48 +76,52 @@ def get_cement_weight(text):
 
 
 def read_yandexru(name_folder):
-    mail = imaplib.IMAP4_SSL('imap.yandex.ru')
-    mail.login('d.bondarev.86@yandex.ru', 'kpwoltwjqpsboxde')
-    mail.list()
+    try:
+        mail = imaplib.IMAP4_SSL('imap.yandex.ru')
+        mail.login('d.bondarev.86@yandex.ru', 'kpwoltwjqpsboxde')
+        mail.list()
 
-    # Выводит список папок в почтовом ящике.
-    #mail.select("inbox")  # Подключаемся к папке "входящие".
-    #mail.create("test")  # Подключаемся к папке "входящие".
-    mail.select(name_folder.encode("utf-8"))
-    #print(mail.search(None, 'ALL'))
+        # Выводит список папок в почтовом ящике.
+        #mail.select("inbox")  # Подключаемся к папке "входящие".
+        #mail.create("test")  # Подключаемся к папке "входящие".
+        mail.select(name_folder.encode("utf-8"))
+        #print(mail.search(None, 'ALL'))
 
-    result, data = mail.uid('search', None, "UNSEEN")  # Выполняет поиск и возвращает UID писем.
-    email_uids = data[0].split()
-    if len(email_uids) == 0:
+        result, data = mail.uid('search', None, "UNSEEN")  # Выполняет поиск и возвращает UID писем.
+        email_uids = data[0].split()
+        if len(email_uids) == 0:
+            return None
+        else:
+            print('length = ', len(email_uids))
+            list_mail_info = list()
+            for uid in email_uids:
+                result, data = mail.uid('fetch', uid, '(RFC822)')
+                raw_email = data[0][1]
+                email_message = email.message_from_bytes(raw_email)
+                #print('SUBJECT')
+                date_text = base64.b64decode(email_message['SUBJECT'].replace('?UTF-8?B?', '')).decode("utf-8", "replace")
+                #print(base64.b64decode(get_first_text_block(email_message['SUBJECT'])).decode("utf-8", "replace"))
+                #print('TO')
+                #print(email_message['To'])
+
+                #print(email.utils.parseaddr(email_message['From']))  # получаем имя отправителя "Yuji Tomita"
+
+                # for item in email_message.items():
+                #     print(item)  # Выводит все заголовки.
+                # print(email_message['Subject'])
+                data = base64.b64decode(get_first_text_block(email_message)).decode("utf-8", "replace")
+                data_dict = dict()
+                data_dict['cement_grade'] = get_cement_grade(data)
+                data_dict['driver'] = get_driver(data)
+                data_dict['address'] = get_address(data)
+                data_dict['date_shipment'] = get_date_shipment(date_text)
+                data_dict['cement_weight'] = get_cement_weight(data)
+                print(data_dict)
+                list_mail_info.append(data_dict)
+            return list_mail_info
+    except Exception as ex:
+        print(ex)
         return None
-    else:
-        print('length = ', len(email_uids))
-        list_mail_info = list()
-        for uid in email_uids:
-            result, data = mail.uid('fetch', uid, '(RFC822)')
-            raw_email = data[0][1]
-            email_message = email.message_from_bytes(raw_email)
-            #print('SUBJECT')
-            date_text = base64.b64decode(email_message['SUBJECT'].replace('?UTF-8?B?', '')).decode("utf-8", "replace")
-            #print(base64.b64decode(get_first_text_block(email_message['SUBJECT'])).decode("utf-8", "replace"))
-            #print('TO')
-            #print(email_message['To'])
-
-            #print(email.utils.parseaddr(email_message['From']))  # получаем имя отправителя "Yuji Tomita"
-
-            # for item in email_message.items():
-            #     print(item)  # Выводит все заголовки.
-            # print(email_message['Subject'])
-            data = base64.b64decode(get_first_text_block(email_message)).decode("utf-8", "replace")
-            data_dict = dict()
-            data_dict['cement_grade'] = get_cement_grade(data)
-            data_dict['driver'] = get_driver(data)
-            data_dict['address'] = get_address(data)
-            data_dict['date_shipment'] = get_date_shipment(date_text)
-            data_dict['cement_weight'] = get_cement_weight(data)
-            print(data_dict)
-            list_mail_info.append(data_dict)
-        return list_mail_info
 
     #print(data)
 
@@ -261,23 +266,29 @@ def create_spread_sheat():
     print(ss.getSheetURL())
 
 
+def event_loop():
+    while True:
+        pass
+
+
 if __name__ == "__main__":
-    create_spread_sheat()
-    mails_info = read_yandexru("test2")
-    if mails_info == None:
-        print('Mails mot found')
-    else:
-        for mail in mails_info:
-            data = list()
-            data.append(mail['date_shipment'])
-            data.append(mail['cement_weight'])
-            data.append(mail['cement_grade'])
-            data.append(mail['driver'])
-            data.append(mail['address'])
-            spreadsheetId = '1Kfkwystan1K4j_K712OysWXeqzBscwCm2bEOahYCLXw'
-            service = open_spread_sheat(spreadsheetId)
-            append_rowdata(spreadsheetId, service, data)
-            set_cellformat(spreadsheetId)
+    # create_spread_sheat()
+    while True:
+        mails_info = read_yandexru("test2")
+        if mails_info == None:
+            print('Mails mot found')
+        else:
+            for mail in mails_info:
+                data = list()
+                data.append(mail['date_shipment'])
+                data.append(mail['cement_weight'])
+                data.append(mail['cement_grade'])
+                data.append(mail['driver'])
+                data.append(mail['address'])
+                spreadsheetId = '1Kfkwystan1K4j_K712OysWXeqzBscwCm2bEOahYCLXw'
+                service = open_spread_sheat(spreadsheetId)
+                append_rowdata(spreadsheetId, service, data)
+                set_cellformat(spreadsheetId)
 
 
 
