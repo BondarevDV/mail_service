@@ -12,6 +12,10 @@ import httplib2
 import apiclient.discovery
 import googleapiclient.errors
 from oauth2client.service_account import ServiceAccountCredentials
+import logger
+
+LOG_INFO_GOOGSHEETS = logger.init("INFO.log")
+
 
 def htmlColorToJSON(htmlColor):
     if htmlColor.startswith("#"):
@@ -53,7 +57,8 @@ class Spreadsheet:
         }).execute()
         self.spreadsheet_info = spreadsheet
         if self.debugMode:
-            pprint(spreadsheet)
+            # pprint(spreadsheet)
+            LOG_INFO_GOOGSHEETS.info(spreadsheet)
 
         self.spreadsheetId = spreadsheet['spreadsheetId']
         self.sheetId = spreadsheet['sheets'][0]['properties']['sheetId']
@@ -70,7 +75,8 @@ class Spreadsheet:
             fields = 'id'
         ).execute()
         if self.debugMode:
-            pprint(shareRes)
+            # pprint(shareRes)
+            LOG_INFO_GOOGSHEETS.info(shareRes)
 
     def shareWithEmailForReading(self, email):
         self.share({'type': 'user', 'role': 'reader', 'emailAddress': email})
@@ -96,14 +102,16 @@ class Spreadsheet:
         spreadsheet = self.service.spreadsheets().get(spreadsheetId = spreadsheetId).execute()
         self.spreadsheet_info = spreadsheet
         if self.debugMode:
-            pprint(spreadsheet)
+            # pprint(spreadsheet)
+            LOG_INFO_GOOGSHEETS.info(spreadsheet)
         self.spreadsheetId = spreadsheet['spreadsheetId']
         self.sheetId = spreadsheet['sheets'][0]['properties']['sheetId']
         self.sheetTitle = spreadsheet['sheets'][0]['properties']['title']
 
     # spreadsheets.batchUpdate and spreadsheets.values.batchUpdate
     def set_sellformat(self, RowIndex, ColumnIndex):
-        print("self.sheetId = ", self.sheetId)
+        # print("self.sheetId = ", self.sheetId)
+        LOG_INFO_GOOGSHEETS.info(self.sheetId)
         self.requests.append({"repeatCell": {
         "range": {
           "sheetId": self.sheetId,
@@ -128,8 +136,10 @@ class Spreadsheet:
         if len(self.requests) > 0:
             upd1Res = self.service.spreadsheets().batchUpdate(spreadsheetId=self.spreadsheetId,
                                                               body={"requests": self.requests}).execute()
-        print("====================================================")
-        print(upd1Res)
+        # print("====================================================")
+        # print(upd1Res)
+        LOG_INFO_GOOGSHEETS.info("====================================================")
+        LOG_INFO_GOOGSHEETS.info(upd1Res)
 
     def runPrepared(self, valueInputOption = "USER_ENTERED"):
         if self.spreadsheetId is None:
@@ -140,12 +150,12 @@ class Spreadsheet:
             if len(self.requests) > 0:
                 upd1Res = self.service.spreadsheets().batchUpdate(spreadsheetId = self.spreadsheetId, body = {"requests": self.requests}).execute()
                 if self.debugMode:
-                    pprint(upd1Res)
+                    LOG_INFO_GOOGSHEETS.info(upd1Res)
             if len(self.valueRanges) > 0:
                 upd2Res = self.service.spreadsheets().values().batchUpdate(spreadsheetId = self.spreadsheetId, body = {"valueInputOption": valueInputOption,
                                                                                                                        "data": self.valueRanges}).execute()
                 if self.debugMode:
-                    pprint(upd2Res)
+                    LOG_INFO_GOOGSHEETS.info(upd2Res)
         finally:
             self.requests = []
             self.valueRanges = []
