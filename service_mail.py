@@ -13,6 +13,8 @@ from config import config
 import logger
 import time
 
+from google_sheets import GOOGLE_CREDENTIALS_FILE
+
 LOG = logger.init("INFO.log")
 
 
@@ -208,15 +210,15 @@ def get_first_text_block(email_message_instance):
         return email_message_instance.get_payload()
 
 
-def create_spread_sheat(docTitle="title", sheetTitle="test_table"):
-    ss = google_sheets.Spreadsheet(GOOGLE_CREDENTIALS_FILE, debugMode=True)
+def create_spread_sheat(docTitle="title", sheetTitle="test_table", google_sheets_creadential_json=GOOGLE_CREDENTIALS_FILE):
+    ss = google_sheets.Spreadsheet(google_sheets_creadential_json, debugMode=True)
     rowCount = 1
     ss.create(docTitle, sheetTitle, rows=rowCount, cols=6, locale="ru_RU", timeZone="Europe/Moscow")
     return ss.getSheetURL()
 
 
-def append_rowdata(spreadsheetId, service, values):
-    set_cellformat(spreadsheetId)
+def append_rowdata(spreadsheetId, service, values, google_sheets_creadential_json):
+    set_cellformat(spreadsheetId, google_sheets_creadential_json)
     list = [values]
     resource = {
         "majorDimension": "ROWS",
@@ -242,8 +244,8 @@ grid = {
 }
 
 
-def set_cellformat(spreadsheetId):
-    ss = google_sheets.Spreadsheet(GOOGLE_CREDENTIALS_FILE, debugMode=True)
+def set_cellformat(spreadsheetId, google_sheets_creadential_json):
+    ss = google_sheets.Spreadsheet(google_sheets_creadential_json, debugMode=True)
     ss.setSpreadsheetById(spreadsheetId)
     # ss.sheetId = 0
     # print(ss.get_spreadsheet_gridProperties(0))
@@ -259,14 +261,14 @@ def set_cellformat(spreadsheetId):
     return ss.service
 
 
-def open_spread_sheat(spreadsheetId):
-    ss = google_sheets.Spreadsheet(GOOGLE_CREDENTIALS_FILE, debugMode=True)
+def open_spread_sheat(spreadsheetId, google_sheets_creadential_json):
+    ss = google_sheets.Spreadsheet(google_sheets_creadential_json, debugMode=True)
     ss.setSpreadsheetById(spreadsheetId)
     return ss.service
 
 
-def create_spread_sheat():
-    ss = google_sheets.Spreadsheet(GOOGLE_CREDENTIALS_FILE, debugMode=True)
+def create_spread_sheat(google_sheets_creadential_json):
+    ss = google_sheets.Spreadsheet(google_sheets_creadential_json, debugMode=True)
     docTitle = "title"
     sheetTitle = "test_table"
     rowCount = 1
@@ -291,7 +293,7 @@ def create_spread_sheat():
 #         p.terminate()
 
 
-def main(spreadsheetId):
+def main(spreadsheetId, google_sheets_creadential_json):
     mails_info = read_yandexru("test2")
     for mail in mails_info:
         if mail is not None:
@@ -301,9 +303,9 @@ def main(spreadsheetId):
             data.append(mail['cement_grade'])
             data.append(mail['driver'])
             data.append(mail['address'])
-            service = open_spread_sheat(spreadsheetId)
-            append_rowdata(spreadsheetId, service, data)
-            set_cellformat(spreadsheetId)
+            service = open_spread_sheat(spreadsheetId, google_sheets_creadential_json)
+            append_rowdata(spreadsheetId, service, data, google_sheets_creadential_json)
+            set_cellformat(spreadsheetId, google_sheets_creadential_json)
         else:
             print("Mail is not found")
             # LOG.info("Mail is not found")
@@ -322,7 +324,7 @@ if __name__ == "__main__":
             spreadsheetId = params.get('spreadsheetid', None)
             GOOGLE_CREDENTIALS_FILE = params.get('credential_file', None)
             if spreadsheetId is not None:
-                main(spreadsheetId)
+                main(spreadsheetId, google_sheets_creadential_json=GOOGLE_CREDENTIALS_FILE)
             # print("1-la")
             # time.sleep(3)
             # print("2-la")
