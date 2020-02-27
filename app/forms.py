@@ -1,7 +1,25 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from flask_wtf import Form
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, Form, \
+    TextField, TextAreaField, validators, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
+from wtforms.validators import Required
+
+
+class SaveMailSettingsForm(FlaskForm):
+    server_smpt = StringField('server_smpt: ', validators=[DataRequired()])
+    server_imap = StringField('server_imap: ', validators=[DataRequired()])
+    email = StringField('email: ', validators=[DataRequired()])
+    mail_password = PasswordField('Password', validators=[DataRequired()])
+    mail_password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('mail_password')])
+    submit = SubmitField('Submit')
+
+
+class NameForm(FlaskForm):
+    name = StringField('What is your name?', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 
 
 class LoginForm(FlaskForm):
@@ -29,7 +47,12 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
+
 class LoadForm(FlaskForm):
     PathToFile = StringField('Path', validators=[DataRequired()])
     submit = SubmitField('Upload')
 
+
+class MessageForm(FlaskForm):
+    PathToFile = StringField('Message', validators=[DataRequired()])
+    submit = SubmitField('Send')

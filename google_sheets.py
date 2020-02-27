@@ -22,14 +22,18 @@ def htmlColorToJSON(htmlColor):
         htmlColor = htmlColor[1:]
     return {"red": int(htmlColor[0:2], 16) / 255.0, "green": int(htmlColor[2:4], 16) / 255.0, "blue": int(htmlColor[4:6], 16) / 255.0}
 
+
 class SpreadsheetError(Exception):
     pass
+
 
 class SpreadsheetNotSetError(SpreadsheetError):
     pass
 
+
 class SheetNotSetError(SpreadsheetError):
     pass
+
 
 class Spreadsheet:
     def __init__(self, jsonKeyFileName, debugMode = False):

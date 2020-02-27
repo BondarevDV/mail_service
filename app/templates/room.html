@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+ <body>
+      <h1>Room {{ user.username }} - {{ user.email }}</h1>
+      <form action = "" method = post >
+            {{ form.hidden_tag() }}
+
+            <title>Search Results - Mail Settings</title>
+                {{ table }}
+
+                <h1>==================================================</h1>
+                <h1>Настройка почты</h1>
+               {{ form.server_smpt.label }}<br>
+               {{ form.server_smpt }}
+               <br>
+
+               {{ form.server_imap.label }}<br>
+               {{ form.server_imap }}
+               <br>
+               {{ form.email.label }}<br>
+               {{ form.email }}
+               <br>
+
+               {{ form.mail_password.label }}<br>
+               {{ form.mail_password }}<br>
+               {{ form.mail_password2.label }}<br>
+               {{ form.mail_password2 }}<br>
+               <br>
+               <p>{{ form.submit() }}</p>
+      </form>
+   </body>
+
+
+
+<!--    <body>-->
+<!--        <h1> USER ACCAUNT</h1>-->
+<!--        <h2>Flask Web Form</h2>-->
+<!--        <form action="" method="post" role="form">-->
+<!--            {{ form.csrf }}-->
+<!--&lt;!&ndash;                <label for="server_smpt">Server SMPT:</label> <br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="text" class="form-control" id="server_smpt" name="server_smpt" placeholder="What's your name?"><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <label for="server_imap">Server IMAP:</label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="text" class="form-control" id="server_imap" name="server_imap" placeholder="What's your name?"><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <label for="email">email: </label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="text" class="form-control" id="email" name="email" placeholder="What's your name?"><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <label for="mail_password">mail_password: </label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="text" class="form-control" id="mail_password" name="mail_password" placeholder="MAIL"><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <label for="mail_password2">mail_password conform: </label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="text" class="form-control" id="mail_password2" name="mail_password2" placeholder="MAIL"><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <button type="submit" class="btn btn-success">Submit</button><br>&ndash;&gt;-->
+<!--        </form>-->
+<!--    </body>-->
+{% endblock %}

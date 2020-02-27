@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "bdv-crm",
+  "private_key_id": "9eb36b64fb668c0bf140da6d6b6e17795a611470",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDLrJgNi+ILhuoX\n01XkmRReklLB8yUKFfpts01Bygsr9nlMpblQKMyrAC/yz0/FI2gwFsvGS9toW2g3\n1Wp3giz+CzT6z5D1aCBdFISrvdWkDudWX/wy9fN/3reXAhbvBxVkWl7Qy0cZ4mBX\nGGPIiKPmaPdX+GxKi6iQIwA/x3LBmhl15MM9S8L7Y8r3vNYpXV+bluswUlkfPysw\nIoeXGWvGxFfEzirtXAr5tvbZlQkkUof0dyDWrdjHF7yKoXP2mO1g3UYwygpu5hNl\n4cDmvJdz5wGwz72ffe3h1Skaj2HIODaSAuRHkA0WUleEKYtktxOBrqFWQuSLh30i\nujr6RtarAgMBAAECggEAY9Xv2KALRwQ0ZkZg8YN54RuPdmOVcdqxHSnJQmjjzgJs\nlf4cFqdRH7chSb+GBgejkAL0kvhnDcHUlZ3GqNsF6+cZaqHpF+oZBxdCKx8MBHWL\nvyKgsGgwGitVSa+sBzGtMjo8BNPHv+/fsoGRk+AqmwwzxgrPJkFL+I83lYvR/ASJ\nrihumlKivrCmJYDIawTQsGLL05YYrvQLBlVDGgCJvCxV1Cj7Xn8/TChPXWNqBH4B\nsBfdxk5BHddVWH7J+zujSihJCdlgY9vgf4RUj9b3xf+9QDpZjFgs+eYUAWyDU3OO\n0V/t8S+L9TB7am6cjORi3ue1GF++FfpHw/uolA+rhQKBgQDw1utAxLZrEH60Vmcf\nELNfAm23DUNI4TZpQ7RNAE4Pf4IbUiwefhmwuXKfjYlw6Tts9zbTJ8smL0WVNh6F\ngdx9InZEz9PQx7eeaHFVu43xAKEqtG22w28pc6dsa8W0BcSVWUCZiwARA53XAFef\nJZ9CcwbI26zfOip8DYZpakFTNwKBgQDYfsNYptVhuYw3KZTQeaYcn6bddIO5MU5Q\nqD/ivJonbSF901F/a16QfiY638GhlEZrfshlIGZQbiGqskcOfb58fmWTztfOPrvT\n/0kLDqgvN+ts8VVGMhTKEFntBtM8TiYrQt2bbPvwgxy7TYn6mDgCYAKwLM1MS8ES\nrR+7dXV6LQKBgEoiDaYRJwmLuUSvd+yTCnOLXtRCy9xKHqKGSaCOIHkayaS5RYVZ\nUXUZkFPWkGDmGfmvmvuiOyEU2flVAE4eLA2Epx0FT/DrGPU0tvYp1kZB6Fop0b+5\nJqV+ySFRhzijseA66eyZYbra/yHoJBCD1yLwHz2CiRLpZ5xp2V7naxY/AoGAfJkI\nKH9sE2BMeHrv8MPyfErOKGokXXMpFXafvgi517MRMW9rWiAbPqG7suqQcEP7+2Xu\nQ3VQLT4VFj6gcpCgDtpX76d9wG+OfkZQbZKz7OkMD5kdcNbl7B1ZA/eHnw+DHCbR\nj+A7Z4KuCIZpwNXWdld3dJl0VlLK/cqxlpvVTskCgYBW7GuznfMWlrr9Ryua3+wY\nYjWrlkjUTQ7kkLXU35p5PYjJqSgirInJOyTgb+xXj2/eF/FWhgI1p2opt1aEDpRf\nRneeMI/xl+UGrKklUEWtU3+fENCO4HvC/v+y9yZ2eH1dF4iAVUv2w6EIby6uMV0g\nB6DGwdWAsbppsSCfARhyMA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "bdv-account@bdv-crm.iam.gserviceaccount.com",
+  "client_id": "100946543894306054991",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bdv-account%40bdv-crm.iam.gserviceaccount.com"
+}
