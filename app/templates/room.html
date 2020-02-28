@@ -4,51 +4,44 @@
  <body>
       <h1>Room {{ user.username }} - {{ user.email }}</h1>
       <form action = "" method = post >
-            {{ form.hidden_tag() }}
-
-            <title>Search Results - Mail Settings</title>
+            {{ form_mail.hidden_tag() }}
                 {{ table }}
 
                 <h1>==================================================</h1>
-                <h1>Настройка почты</h1>
-               {{ form.server_smpt.label }}<br>
-               {{ form.server_smpt }}
+                <h1>Настройка почты для доступа сервиса</h1>
+               {{ form_mail.server_smpt.label }}<br>
+               {{ form_mail.server_smpt }}
                <br>
 
-               {{ form.server_imap.label }}<br>
-               {{ form.server_imap }}
+               {{ form_mail.server_imap.label }}<br>
+               {{ form_mail.server_imap }}
                <br>
-               {{ form.email.label }}<br>
-               {{ form.email }}
+               {{ form_mail.email.label }}<br>
+               {{ form_mail.email }}
                <br>
 
-               {{ form.mail_password.label }}<br>
-               {{ form.mail_password }}<br>
-               {{ form.mail_password2.label }}<br>
-               {{ form.mail_password2 }}<br>
+               {{ form_mail.mail_password.label }}<br>
+               {{ form_mail.mail_password }}<br>
+               {{ form_mail.mail_password2.label }}<br>
+               {{ form_mail.mail_password2 }}<br>
                <br>
-               <p>{{ form.submit() }}</p>
-      </form>
+               <p>{{ form_mail.submit() }}</p>
+        </form>
+        <h1>==================================================</h1>
+        <h1>Настройка доступа к таблицам Google</h1>
+
+
+        <form action="" method=post enctype=multipart/form-data>
+            {{ form_mail.hidden_tag() }}
+              {{ form_gs.spreadsheets_id.label }}<br>
+              {{ form_gs.spreadsheets_id }}<br>
+
+              {{ form_gs.credential_file.label }}<br>
+              {{ form_gs.credential_file }}<br>
+                <p>{{ form_gs.submit() }}</p>
+        </form>
+
+
    </body>
 
-
-
-<!--    <body>-->
-<!--        <h1> USER ACCAUNT</h1>-->
-<!--        <h2>Flask Web Form</h2>-->
-<!--        <form action="" method="post" role="form">-->
-<!--            {{ form.csrf }}-->
-<!--&lt;!&ndash;                <label for="server_smpt">Server SMPT:</label> <br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input type="text" class="form-control" id="server_smpt" name="server_smpt" placeholder="What's your name?"><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <label for="server_imap">Server IMAP:</label><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input type="text" class="form-control" id="server_imap" name="server_imap" placeholder="What's your name?"><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <label for="email">email: </label><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input type="text" class="form-control" id="email" name="email" placeholder="What's your name?"><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <label for="mail_password">mail_password: </label><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input type="text" class="form-control" id="mail_password" name="mail_password" placeholder="MAIL"><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <label for="mail_password2">mail_password conform: </label><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input type="text" class="form-control" id="mail_password2" name="mail_password2" placeholder="MAIL"><br>&ndash;&gt;-->
-<!--&lt;!&ndash;                <button type="submit" class="btn btn-success">Submit</button><br>&ndash;&gt;-->
-<!--        </form>-->
-<!--    </body>-->
 {% endblock %}

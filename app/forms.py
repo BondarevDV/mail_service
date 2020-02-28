@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, Form, \
-    TextField, TextAreaField, validators, SubmitField
+    TextField, TextAreaField, validators, SubmitField, FileField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 from wtforms.validators import Required
@@ -14,7 +14,13 @@ class SaveMailSettingsForm(FlaskForm):
     mail_password = PasswordField('Password', validators=[DataRequired()])
     mail_password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('mail_password')])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Добавить')
+
+
+class spreadsheetForm(FlaskForm):
+    spreadsheets_id = StringField('spreadsheets_id: ', validators=[DataRequired()])
+    credential_file = FileField('credential file: ', validators=[DataRequired()])
+    submit = SubmitField('Добавить')
 
 
 class NameForm(FlaskForm):

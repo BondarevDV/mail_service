@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
+from dominate.tags import form
+
 from app import app
 from app import db
 from app import mail
 from app.forms import LoginForm
 from app.forms import MessageForm
 from app.forms import NameForm
-from app.forms import RegistrationForm, LoadForm, SaveMailSettingsForm
+from app.forms import RegistrationForm, LoadForm, SaveMailSettingsForm, spreadsheetForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, MailSettings, ResultsMailSettings
+from app.models import User, MailSettings, ResultsMailSettings, Spreadsheets
 from werkzeug.utils import secure_filename
+import json
 
 import os
 from flask_mail import Message
@@ -179,26 +182,44 @@ def register():
 #@login_manager.user_loader
 def room():
     form = SaveMailSettingsForm()
+    form_googlesheets = spreadsheetForm()
     items = db.session.query(MailSettings)
     table = ResultsMailSettings(items)
     table.border = True
     # username=getattr(current_user, 'username', 'unknown'))
     # username=current_user.username)
     user = User.query.filter_by(id=current_user.id).first()
-    if form.is_submitted():
-        print('Room validate_on_submit')
-        mail_settings = MailSettings(server_imap=form.server_imap.data,
-                                     server_smpt=form.server_smpt.data,
-                                     port=587,
-                                     tls=True,
-                                     email=form.email.data,
-                                     email_default=form.email.data)
-        mail_settings.set_mailpassword(form.mail_password.data)
-        db.session.add(mail_settings)
+    # if form.is_submitted():
+    #     print('Room validate_on_submit form')
+    #     mail_settings = MailSettings(server_imap=form.server_imap.data,
+    #                                  server_smpt=form.server_smpt.data,
+    #                                  port=587,
+    #                                  tls=True,
+    #                                  email=form.email.data,
+    #                                  email_default=form.email.data)
+    #     mail_settings.set_mailpassword(form.mail_password.data)
+    #     db.session.add(mail_settings)
+    #     db.session.commit()
+    #     flash('Congratulations, you are now a registered user!')
+    #     return redirect(url_for('room'))
+    if form_googlesheets.is_submitted():
+        print('Room validate_on_submit form_googlesheets ')
+        print(form_googlesheets.spreadsheets_id.data)
+        data = json.load(form_googlesheets.credential_file.data)
+        ss_settings = Spreadsheets(spreadsheets_id=form_googlesheets.spreadsheets_id.data,
+                                   credential_file=data)
+        # mail_settings.set_mailpassword(form.mail_password.data)
+        db.session.add(ss_settings)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        flash('Congratulations, you are add google sheets!')
         return redirect(url_for('room'))
-    return render_template('room.html', title='room', form=form, table=table, user=user)
+
+    return render_template('room.html',
+                           title='room',
+                           form_mail=form,
+                           form_gs=form_googlesheets,
+                           table=table,
+                           user=user)
 
 
 def allowed_file(filename):

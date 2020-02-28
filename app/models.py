@@ -9,6 +9,7 @@ from app import login
 from flask import current_app
 import redis
 from flask_table import Table, Col
+from sqlalchemy.dialects.postgresql import JSON
 
 SCHEMA = 'mail'
 
@@ -55,7 +56,7 @@ class Spreadsheets(db.Model):
     __table_args__ = {'schema': SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     spreadsheets_id = db.Column(db.String(300), index=True, unique=True, nullable=False)
-    credential_file = db.Column(db.String(300), index=True, unique=True, nullable=False)
+    credential_file = db.Column(JSON)
 
     def __repr__(self):
         return '<Spreadsheets {}>'.format(self.body)
