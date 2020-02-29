@@ -304,13 +304,13 @@ def testPureBlackBorder():
     ss = Spreadsheet(GOOGLE_CREDENTIALS_FILE, debugMode = True)
     ss.setSpreadsheetById('19SPK--efwYq9pZ7TvBYtFItxE0gY3zpfR5NykOJ6o7I')
     ss.requests.append({"updateBorders": {"range": {"sheetId": ss.sheetId, "startRowIndex": 1, "endRowIndex": 2, "startColumnIndex": 0, "endColumnIndex": 3},
-                                          "bottom": {"style": "SOLID", "width": 3, "color": {"red": 0, "green": 0, "blue": 0}}}})
+                                          "bottom": {"styles": "SOLID", "width": 3, "color": {"red": 0, "green": 0, "blue": 0}}}})
     ss.requests.append({"updateBorders": {"range": {"sheetId": ss.sheetId, "startRowIndex": 2, "endRowIndex": 3, "startColumnIndex": 0, "endColumnIndex": 3},
-                                          "bottom": {"style": "SOLID", "width": 3, "color": {"red": 0, "green": 0, "blue": 0, "alpha": 1.0}}}})
+                                          "bottom": {"styles": "SOLID", "width": 3, "color": {"red": 0, "green": 0, "blue": 0, "alpha": 1.0}}}})
     ss.requests.append({"updateBorders": {"range": {"sheetId": ss.sheetId, "startRowIndex": 3, "endRowIndex": 4, "startColumnIndex": 1, "endColumnIndex": 4},
-                                          "bottom": {"style": "SOLID", "width": 3, "color": {"red": 0, "green": 0, "blue": 0.001}}}})
+                                          "bottom": {"styles": "SOLID", "width": 3, "color": {"red": 0, "green": 0, "blue": 0.001}}}})
     ss.requests.append({"updateBorders": {"range": {"sheetId": ss.sheetId, "startRowIndex": 4, "endRowIndex": 5, "startColumnIndex": 2, "endColumnIndex": 5},
-                                          "bottom": {"style": "SOLID", "width": 3, "color": {"red": 0.001, "green": 0, "blue": 0}}}})
+                                          "bottom": {"styles": "SOLID", "width": 3, "color": {"red": 0.001, "green": 0, "blue": 0}}}})
     ss.runPrepared()
     # Reported: https://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=4696
 
@@ -366,7 +366,7 @@ def testCreateTimeManagementReport():
 
     # Bottom border for A3:E3 row
     ss.requests.append({"updateBorders": {"range": {"sheetId": ss.sheetId, "startRowIndex": 2, "endRowIndex": 3, "startColumnIndex": 0, "endColumnIndex": 5},
-                                          "bottom": {"style": "SOLID", "width": 1, "color": htmlColorToJSON("#000001")}}})
+                                          "bottom": {"styles": "SOLID", "width": 1, "color": htmlColorToJSON("#000001")}}})
 
     ss.prepare_setValues("A1:A1", [[sheetTitle]])
     ss.prepare_setValues("A3:E%d" % (rowCount + 3), values)
@@ -388,7 +388,7 @@ def testCreateTimeManagementReport():
 
     # Bottom border for G3:H3 row
     ss.requests.append({"updateBorders": {"range": {"sheetId": ss.sheetId, "startRowIndex": 2, "endRowIndex": 3, "startColumnIndex": 6, "endColumnIndex": 8},
-                                          "bottom": {"style": "SOLID", "width": 1, "color": htmlColorToJSON("#000001")}}})
+                                          "bottom": {"styles": "SOLID", "width": 1, "color": htmlColorToJSON("#000001")}}})
 
     ss.prepare_setValues("G1:G1", [["Категории"]])
     ss.prepare_setValues("G3:H%d" % (rowCount2 + 3), values2)

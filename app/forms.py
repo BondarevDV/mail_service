@@ -1,10 +1,18 @@
 from flask_wtf import FlaskForm
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, Form, \
-    TextField, TextAreaField, validators, SubmitField, FileField
+    TextField, TextAreaField, validators, SubmitField, FileField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 from wtforms.validators import Required
+
+
+class ConfigListenForm(FlaskForm):
+    HOUR_CHOICES = [('1', '8am'), ('2', '10am')]
+    mail = SelectField('Доступная почта:', choices=HOUR_CHOICES)
+    dir = StringField('dir: ', validators=[DataRequired()])
+    spreadsheats = SelectField('Доступные таблицы google:', choices=HOUR_CHOICES)
+    submit = SubmitField('Добавить')
 
 
 class SaveMailSettingsForm(FlaskForm):

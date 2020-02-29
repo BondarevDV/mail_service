@@ -8,7 +8,7 @@ from flask_login import UserMixin
 from app import login
 from flask import current_app
 import redis
-from flask_table import Table, Col
+from flask_table import Table, Col, ButtonCol, LinkCol, BoolCol
 from sqlalchemy.dialects.postgresql import JSON
 
 SCHEMA = 'mail'
@@ -24,6 +24,14 @@ class ResultsMailSettings(Table):
     email = Col('email')
     port = Col('port')
     tls = Col('tls')
+    delete = ButtonCol('Delete', 'delete_mail', url_kwargs=dict(id='id'))
+
+class ResultsgoodleSS(Table):
+    id = Col('id', show=False)
+    spreadsheets_id = Col('spreadsheets_id')
+    credential_file = Col('credential_file')
+
+
 
 
 @login.user_loader

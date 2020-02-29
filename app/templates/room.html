@@ -1,47 +1,103 @@
 {% extends "base.html" %}
 
 {% block content %}
- <body>
       <h1>Room {{ user.username }} - {{ user.email }}</h1>
-      <form action = "" method = post >
-            {{ form_mail.hidden_tag() }}
-                {{ table }}
 
-                <h1>==================================================</h1>
-                <h1>Настройка почты для доступа сервиса</h1>
-               {{ form_mail.server_smpt.label }}<br>
-               {{ form_mail.server_smpt }}
-               <br>
+    <div class="tabs">
+        <input type="radio" name="inset" value="" id="tab_0" checked>
+        <label for="tab_0">Прослушивание почты</label>
 
-               {{ form_mail.server_imap.label }}<br>
-               {{ form_mail.server_imap }}
-               <br>
-               {{ form_mail.email.label }}<br>
-               {{ form_mail.email }}
-               <br>
+        <input type="radio" name="inset" value="" id="tab_1" checked>
+        <label for="tab_1">Добавить новую почту</label>
 
-               {{ form_mail.mail_password.label }}<br>
-               {{ form_mail.mail_password }}<br>
-               {{ form_mail.mail_password2.label }}<br>
-               {{ form_mail.mail_password2 }}<br>
-               <br>
-               <p>{{ form_mail.submit() }}</p>
-        </form>
-        <h1>==================================================</h1>
-        <h1>Настройка доступа к таблицам Google</h1>
+        <input type="radio" name="inset" value="" id="tab_2">
+        <label for="tab_2">Добавить новую таблицу Google</label>
+
+        <input type="radio" name="inset" value="" id="tab_3">
+        <label for="tab_3">INFO Почта</label>
+
+        <input type="radio" name="inset" value="" id="tab_4">
+        <label for="tab_4">INFO GOOGLE</label>
+
+        <div id="txt_0">
+            <form action = "" method = post >
+                <fieldset>
+                    <legend>Personal information:</legend>
+                    {{ form_l.hidden_tag() }}
+                    {{ form_l.mail.label }} <br>
+                    {{ form_l.mail }} <br>
+
+                    {{ form_l.dir.label }} <br>
+                    {{ form_l.dir }} <br>
+
+                    {{ form_l.spreadsheats.label }} <br>
+                    {{ form_l.spreadsheats }} <br>
+                    <br>
+                    {{ form_l.submit() }}
+                </fieldset>
+            </form>
+
+        </div>
+        <div id="txt_1">
+            <form action = "{{ url_for('add_mail_settings') }}" method = post >
+                {{ form_mail.hidden_tag() }}
 
 
-        <form action="" method=post enctype=multipart/form-data>
-            {{ form_mail.hidden_tag() }}
-              {{ form_gs.spreadsheets_id.label }}<br>
-              {{ form_gs.spreadsheets_id }}<br>
+                <fieldset>
+                    <legend>Добавить новую почту:</legend>
+                   {{ form_mail.server_smpt.label }}<br>
+                   {{ form_mail.server_smpt }}
+                   <br>
 
-              {{ form_gs.credential_file.label }}<br>
-              {{ form_gs.credential_file }}<br>
-                <p>{{ form_gs.submit() }}</p>
-        </form>
+                   {{ form_mail.server_imap.label }}<br>
+                   {{ form_mail.server_imap }}
+                   <br>
+                   {{ form_mail.email.label }}<br>
+                   {{ form_mail.email }}
+                   <br>
+
+                   {{ form_mail.mail_password.label }}<br>
+                   {{ form_mail.mail_password }}<br>
+                   {{ form_mail.mail_password2.label }}<br>
+                   {{ form_mail.mail_password2 }}<br>
+                   <br>
+                   <p>{{ form_mail.submit() }}</p>
+                </fieldset>
+            </form>
+        </div>
+        <div id="txt_2">
+            <form action="{{ url_for('add_google_ss_settings') }}" method=post enctype=multipart/form-data>
+                <fieldset>
+                    <legend>Добавить новую таблицу Google:</legend>
+                          {{ form_mail.hidden_tag() }}
+                          {{ form_gs.spreadsheets_id.label }}<br>
+                          {{ form_gs.spreadsheets_id }}<br>
+
+                          {{ form_gs.credential_file.label }}<br>
+                          {{ form_gs.credential_file }}<br>
+                            <p>{{ form_gs.submit() }}</p>
+                </fieldset>
+            </form>
+        </div>
+        <div id="txt_3">
+            <fieldset>
+                    <legend>Доступные почты:</legend>
+                    {{ table }}
+            </fieldset>
+        </div>
+        <div id="txt_4">
+            <fieldset>
+                    <legend>Доступные таблицы Google:</legend>
+                    {{ table_ss }}
+            </fieldset>
+        </div>
+    </div>
 
 
-   </body>
+
+
+
+
+
 
 {% endblock %}

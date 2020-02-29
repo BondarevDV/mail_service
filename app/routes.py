@@ -7,10 +7,10 @@ from app import mail
 from app.forms import LoginForm
 from app.forms import MessageForm
 from app.forms import NameForm
-from app.forms import RegistrationForm, LoadForm, SaveMailSettingsForm, spreadsheetForm
+from app.forms import RegistrationForm, LoadForm, SaveMailSettingsForm, spreadsheetForm, ConfigListenForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, MailSettings, ResultsMailSettings, Spreadsheets
+from app.models import User, MailSettings, ResultsMailSettings, Spreadsheets, ResultsgoodleSS, Listen
 from werkzeug.utils import secure_filename
 import json
 
@@ -23,59 +23,10 @@ from config import config
 from app import celery
 from celery.result import AsyncResult
 
-from threading import Thread
-
-# @app.route('/index_1')
-# def index():
-#     user = {'username': 'Эльдар Рязанов'}
-#     posts = [
-#         {
-#             'author': {'username': 'John'},
-#             'body': 'Beautiful day in Portland!'
-#         },
-#         {
-#             'author': {'username': 'Susan'},
-#             'body': 'The Avengers movie was so cool!'
-#         },
-#         {
-#             'author': {'username': 'Ипполит'},
-#             'body': 'Какая гадость эта ваша заливная рыба!!'
-#         }
-#     ]
-#     return render_template('index_1.html', title='Home', user=user, posts=posts)
-
-
-class load_user:
-    def __init__(self, id):
-        self.users = dict()
-        self.users['1'] = 'Dima'
-        self.users['2'] = 'Anna'
-        self.user = self.users.get(id, None)
-        if self.user is None:
-            return None
-        print(self.user)
-
-    @property
-    def name(self):
-        return self.user
-
 
 @app.route('/process/<name>')
 def process(name):
     return name
-
-
-@app.route('/test_user/<id>')
-def get_user(id):
-    user = load_user(id)
-    if not user:
-        abort(404)
-    return '<h1>Hello, %s </h1>' % user.name
-
-
-@app.route('/input/')
-def input():
-    return render_template('message.html')
 
 
 @app.route('/user/')
@@ -85,19 +36,7 @@ def user():
     return render_template('room.html', form=form, name='LALALA')
 
 
-@app.route('/book', methods=['GET', 'POST'])
-def book():
-    name = None
-    form = NameForm()
-    if form.validate_on_submit():
-        name = form.name.data
-    form.name.data = ''
-    return render_template('book_index.html', form=form, name=name)
 
-
-@app.route('/test_redirect')
-def test_redirect():
-    return redirect('http://www.example.com')
 
 
 @app.route('/')
@@ -169,39 +108,101 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-# @app.route('/room', methods=['GET', 'POST'])
-# @login_required
-# def room():
-#     #flash('Congratulations, user enter in room!')
-#     form = SaveMailSettingsForm()
-#     return render_template('room.html', title='room', form=form)
+@app.route('/delete_mail/<id>', methods=['GET', 'POST'])
+@login_required
+def delete_mail(id):
+    print('remove = ', id)
+    form = SaveMailSettingsForm()
+    form_googlesheets = spreadsheetForm()
+    form_listen = ConfigListenForm()
+    mail = MailSettings.query.get(id)
+    db.session.delete(mail)
+    db.session.commit()
+
+    items = db.session.query(MailSettings)
+    table = ResultsMailSettings(items)
+    table.border = True
+
+    items_ss = db.session.query(Spreadsheets)
+    table_ss = ResultsgoodleSS(items_ss)
+    table_ss.border = True
+    user = User.query.filter_by(id=current_user.id).first()
+
+    return render_template('room.html',
+                           title='room',
+                           form_mail=form,
+                           form_gs=form_googlesheets,
+                           form_l=form_listen,
+                           table=table,
+                           table_ss=table_ss,
+                           user=user)
 
 
 @app.route('/room', methods=['GET', 'POST'])
 @login_required
-#@login_manager.user_loader
 def room():
+    user = User.query.filter_by(id=current_user.id).first()
     form = SaveMailSettingsForm()
     form_googlesheets = spreadsheetForm()
+    form_listen = ConfigListenForm()
+
     items = db.session.query(MailSettings)
     table = ResultsMailSettings(items)
     table.border = True
-    # username=getattr(current_user, 'username', 'unknown'))
-    # username=current_user.username)
-    user = User.query.filter_by(id=current_user.id).first()
-    # if form.is_submitted():
-    #     print('Room validate_on_submit form')
-    #     mail_settings = MailSettings(server_imap=form.server_imap.data,
-    #                                  server_smpt=form.server_smpt.data,
-    #                                  port=587,
-    #                                  tls=True,
-    #                                  email=form.email.data,
-    #                                  email_default=form.email.data)
-    #     mail_settings.set_mailpassword(form.mail_password.data)
-    #     db.session.add(mail_settings)
-    #     db.session.commit()
-    #     flash('Congratulations, you are now a registered user!')
-    #     return redirect(url_for('room'))
+
+    items_ss = db.session.query(Spreadsheets)
+    table_ss = ResultsgoodleSS(items_ss)
+    table_ss.border = True
+
+    return render_template('room.html',
+                           title='room',
+                           form_mail=form,
+                           form_gs=form_googlesheets,
+                           form_l=form_listen,
+                           table=table,
+                           table_ss=table_ss,
+                           user=user)
+
+
+@app.route('/listen', methods=['GET', 'POST'])
+@login_required
+def listen():
+    form_listen = ConfigListenForm()
+    if form_listen.is_submitted():
+        print('Room validate_on_submit form')
+        listen_settings = Listen(id_mail=form.server_imap.data,
+                                 id_user=User.query.filter_by(id=current_user.id).first())
+        db.session.add(listen_settings)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('room'))
+    return render_template('room.html')
+
+
+@app.route('/add_mail_settings', methods=['GET', 'POST'])
+@login_required
+def add_mail_settings():
+    form = SaveMailSettingsForm()
+    if form.is_submitted():
+        print('Room validate_on_submit form')
+        mail_settings = MailSettings(server_imap=form.server_imap.data,
+                                     server_smpt=form.server_smpt.data,
+                                     port=587,
+                                     tls=True,
+                                     email=form.email.data,
+                                     email_default=form.email.data)
+        mail_settings.set_mailpassword(form.mail_password.data)
+        db.session.add(mail_settings)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('room'))
+    return render_template('room.html')
+
+
+@app.route('/add_google_ss_settings', methods=['GET', 'POST'])
+@login_required
+def add_google_ss_settings():
+    form_googlesheets = spreadsheetForm()
     if form_googlesheets.is_submitted():
         print('Room validate_on_submit form_googlesheets ')
         print(form_googlesheets.spreadsheets_id.data)
@@ -213,31 +214,7 @@ def room():
         db.session.commit()
         flash('Congratulations, you are add google sheets!')
         return redirect(url_for('room'))
-
-    return render_template('room.html',
-                           title='room',
-                           form_mail=form,
-                           form_gs=form_googlesheets,
-                           table=table,
-                           user=user)
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
-
-
-@app.route('/load', methods=['GET', 'POST'])
-@login_required
-def load():
-    form = LoadForm()
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('index'))
-    return render_template('load.html', title='load', form=form)
+    return render_template('room.html')
 
 
 @celery.task(name='spreadsheets.processing')
@@ -283,3 +260,8 @@ def contact():
 
     print("\nData received. Now redirecting ...")
     return redirect(url_for('index'))
+
+
+@app.route('/tabs', methods=['GET', 'POST'])
+def tabs():
+    return render_template('tabs_example.html')
