@@ -11,7 +11,7 @@ import redis
 from flask_table import Table, Col, ButtonCol, LinkCol, BoolCol
 from sqlalchemy.dialects.postgresql import JSON
 
-SCHEMA = 'mail'
+SCHEMA = 'debug'
 
 
 class ResultsMailSettings(Table):
@@ -41,6 +41,8 @@ def load_user(id):
 
 class MailSettings(db.Model):
     __table_args__ = {'schema': SCHEMA}
+    __tablename__ = 'mail_settings'
+    id_owner = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
     id = db.Column(db.Integer, primary_key=True)
     server_smpt = db.Column(db.String(300))
     server_imap = db.Column(db.String(300))
@@ -62,23 +64,14 @@ class MailSettings(db.Model):
 
 class Spreadsheets(db.Model):
     __table_args__ = {'schema': SCHEMA}
+    __tablename__ = 'spreadsheets'
     id = db.Column(db.Integer, primary_key=True)
+    id_owner = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
     spreadsheets_id = db.Column(db.String(300), index=True, unique=True, nullable=False)
     credential_file = db.Column(JSON)
 
     def __repr__(self):
         return '<Spreadsheets {}>'.format(self.body)
-
-
-class Listen(db.Model):
-    __table_args__ = {'schema': SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
-    id_mail = db.Column(db.Integer, db.ForeignKey('{}.mail_settings.id'.format(SCHEMA)))
-    id_user = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
-    #id_spreadsheets = db.Column(db.Integer, db.ForeignKey('Spreadsheets.id'))
-
-    def __repr__(self):
-        return '<Listen {}>'.format(self.body)
 
 
 class Message(db.Model):
@@ -99,6 +92,10 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+
+    Spreadsheets = db.relationship('spreadsheets', backref='User', lazy='dynamic')
+    MailSettings = db.relationship('mail_settings', backref='User', lazy='dynamic')
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -123,6 +120,18 @@ class User(UserMixin, db.Model):
     def get_task_in_progress(self, name):
         return Task.query.filter_by(name=name, user=self,
                                     complete=False).first()
+
+
+class ListenTask(db.Model):
+    __table_args__ = {'schema': SCHEMA}
+    id = db.Column(db.Integer, primary_key=True)
+    desc = db.Column(db.String(256), index=True, unique=True)
+    id_mail = db.Column(db.Integer, db.ForeignKey('{}.mail_settings.id'.format(SCHEMA)))
+    id_owner = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
+    id_spreadsheets = db.Column(db.Integer, db.ForeignKey('{}.spreadsheets.id'.format(SCHEMA)))
+
+    def __repr__(self):
+        return '<Listen {}>'.format(self.body)
 
 
 class Post(db.Model):

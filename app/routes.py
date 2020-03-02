@@ -10,7 +10,7 @@ from app.forms import NameForm
 from app.forms import RegistrationForm, LoadForm, SaveMailSettingsForm, spreadsheetForm, ConfigListenForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, MailSettings, ResultsMailSettings, Spreadsheets, ResultsgoodleSS, Listen
+from app.models import User, MailSettings, ResultsMailSettings, Spreadsheets, ResultsgoodleSS, ListenTask
 from werkzeug.utils import secure_filename
 import json
 
