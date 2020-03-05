@@ -10,12 +10,31 @@ from flask import current_app
 import redis
 from flask_table import Table, Col, ButtonCol, LinkCol, BoolCol
 from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation
 
 SCHEMA = 'debug'
 
 
+# engine = create_engine(app.config['DATABASE_URI'],
+#                        convert_unicode=True,
+#                        **app.config['DATABASE_CONNECT_OPTIONS'])
+# db_session = scoped_session(sessionmaker(autocommit=False,
+#                                          autoflush=False,
+#                                          bind=engine))
+
+
+# def init_db():
+#     Model.metadata.create_all(bind=engine)
+
+
+# Model = declarative_base(name='Model')
+# Model.query = db_session.query_property()
+
+
 class ResultsMailSettings(Table):
     id = Col('id', show=False)
+    id_owner = Col('id_owner', show=False)
     # spreadsheets_id = Col('spreadsheets_id')
     # credential_file = Col('credential_file')
 
@@ -26,10 +45,12 @@ class ResultsMailSettings(Table):
     tls = Col('tls')
     delete = ButtonCol('Delete', 'delete_mail', url_kwargs=dict(id='id'))
 
+
 class ResultsgoodleSS(Table):
     id = Col('id', show=False)
     spreadsheets_id = Col('spreadsheets_id')
     credential_file = Col('credential_file')
+    delete = ButtonCol('Delete', 'delete_ss', url_kwargs=dict(id='id'))
 
 
 
@@ -53,7 +74,7 @@ class MailSettings(db.Model):
     mail_password_hash = db.Column(db.String(300))
 
     def __repr__(self):
-        return '<mail_settings {}>'.format(self.body)
+        return '<mail_settings {}>'.format(self.id)
 
     def set_mailpassword(self, password):
         self.mail_password_hash = generate_password_hash(password)
@@ -67,11 +88,11 @@ class Spreadsheets(db.Model):
     __tablename__ = 'spreadsheets'
     id = db.Column(db.Integer, primary_key=True)
     id_owner = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
-    spreadsheets_id = db.Column(db.String(300), index=True, unique=True, nullable=False)
+    spreadsheets_id = db.Column(db.String(300), nullable=False)
     credential_file = db.Column(JSON)
 
     def __repr__(self):
-        return '<Spreadsheets {}>'.format(self.body)
+        return '<Spreadsheets {}>'.format(self.id)
 
 
 class Message(db.Model):
@@ -86,42 +107,6 @@ class Message(db.Model):
         return '<Message {}>'.format(self.body)
 
 
-class User(UserMixin, db.Model):
-    __table_args__ = {'schema': SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-
-    Spreadsheets = db.relationship('spreadsheets', backref='User', lazy='dynamic')
-    MailSettings = db.relationship('mail_settings', backref='User', lazy='dynamic')
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
-
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-    def launch_task(self, name, description, *args, **kwargs):
-        rq_job = current_app.task_queue.enqueue('app.tasks.' + name, self.id,
-                                                *args, **kwargs)
-        task = Task(id=rq_job.get_id(), name=name, description=description,
-                    user=self)
-        db.session.add(task)
-        return task
-
-    def get_tasks_in_progress(self):
-        return Task.query.filter_by(user=self, complete=False).all()
-
-    def get_task_in_progress(self, name):
-        return Task.query.filter_by(name=name, user=self,
-                                    complete=False).first()
-
-
 class ListenTask(db.Model):
     __table_args__ = {'schema': SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
@@ -131,7 +116,7 @@ class ListenTask(db.Model):
     id_spreadsheets = db.Column(db.Integer, db.ForeignKey('{}.spreadsheets.id'.format(SCHEMA)))
 
     def __repr__(self):
-        return '<Listen {}>'.format(self.body)
+        return '<Listen {}>'.format(self.id)
 
 
 class Post(db.Model):
@@ -165,3 +150,40 @@ class Task(db.Model):
         job = self.get_rq_job()
         return job.meta.get('progress', 0) if job is not None else 100
 
+
+class User(UserMixin, db.Model):
+    __table_args__ = {'schema': SCHEMA}
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+
+    table_ss = db.relationship('Spreadsheets', backref='User', lazy='dynamic')
+    emails = db.relationship('MailSettings', backref='User', lazy='dynamic')
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def launch_task(self, name, description, *args, **kwargs):
+        rq_job = current_app.task_queue.enqueue('app.tasks.' + name, self.id,
+                                                *args, **kwargs)
+        task = Task(id=rq_job.get_id(), name=name, description=description,
+                    user=self)
+        db.session.add(task)
+        return task
+
+    def get_tasks_in_progress(self):
+        return Task.query.filter_by(user=self, complete=False).all()
+
+    def get_task_in_progress(self, name):
+        return Task.query.filter_by(name=name, user=self,
+                                    complete=False).first()
+
+# event.listen(db_session, 'after_flush', search.update_model_based_indexes)

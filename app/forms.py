@@ -8,10 +8,11 @@ from wtforms.validators import Required
 
 
 class ConfigListenForm(FlaskForm):
-    HOUR_CHOICES = [('1', '8am'), ('2', '10am')]
-    mail = SelectField('Доступная почта:', choices=HOUR_CHOICES)
-    dir = StringField('dir: ', validators=[DataRequired()])
-    spreadsheats = SelectField('Доступные таблицы google:', choices=HOUR_CHOICES)
+    EMPTY = []
+    mail = SelectField('Доступная почта:', choices=EMPTY)
+    desc = StringField('Описание: ', validators=[DataRequired()])
+    spreadsheet = SelectField('Доступные таблицы google:', choices=EMPTY)
+    script = TextAreaField('Скрипт', validators=[DataRequired()])
     submit = SubmitField('Добавить')
 
 

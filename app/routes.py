@@ -138,6 +138,36 @@ def delete_mail(id):
                            user=user)
 
 
+@app.route('/delete_ss/<id>', methods=['GET', 'POST'])
+@login_required
+def delete_ss(id):
+    print('remove = ', id)
+    form = SaveMailSettingsForm()
+    form_googlesheets = spreadsheetForm()
+    form_listen = ConfigListenForm()
+    ss = Spreadsheets.query.get(id)
+    db.session.delete(ss)
+    db.session.commit()
+
+    items = db.session.query(MailSettings)
+    table = ResultsMailSettings(items)
+    table.border = True
+
+    items_ss = db.session.query(Spreadsheets)
+    table_ss = ResultsgoodleSS(items_ss)
+    table_ss.border = True
+    user = User.query.filter_by(id=current_user.id).first()
+
+    return render_template('room.html',
+                           title='room',
+                           form_mail=form,
+                           form_gs=form_googlesheets,
+                           form_l=form_listen,
+                           table=table,
+                           table_ss=table_ss,
+                           user=user)
+
+
 @app.route('/room', methods=['GET', 'POST'])
 @login_required
 def room():
@@ -145,12 +175,18 @@ def room():
     form = SaveMailSettingsForm()
     form_googlesheets = spreadsheetForm()
     form_listen = ConfigListenForm()
+    ss = Spreadsheets.query.filter_by(id_owner=current_user.id).all()
+    mails = MailSettings.query.filter_by(id_owner=current_user.id).all()
+    #print([item.spreadsheets_id for item in ss])
+    form_listen.spreadsheet.choices = [(item.id, item.spreadsheets_id) for item in ss]
+    form_listen.mail.choices = [(item.id, item.email) for item in mails]
 
-    items = db.session.query(MailSettings)
+
+    items = MailSettings.query.filter_by(id_owner=current_user.id)
     table = ResultsMailSettings(items)
     table.border = True
 
-    items_ss = db.session.query(Spreadsheets)
+    items_ss = Spreadsheets.query.filter_by(id_owner=current_user.id)
     table_ss = ResultsgoodleSS(items_ss)
     table_ss.border = True
 
@@ -170,8 +206,9 @@ def listen():
     form_listen = ConfigListenForm()
     if form_listen.is_submitted():
         print('Room validate_on_submit form')
-        listen_settings = Listen(id_mail=form.server_imap.data,
-                                 id_user=User.query.filter_by(id=current_user.id).first())
+        listen_settings = ListenTask(id_mail=form.server_imap.data,
+                                     id_user=User.query.filter_by(id=current_user.id).first(),
+                                     id_spreadsheets=form.server_imap.data)
         db.session.add(listen_settings)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
@@ -185,7 +222,8 @@ def add_mail_settings():
     form = SaveMailSettingsForm()
     if form.is_submitted():
         print('Room validate_on_submit form')
-        mail_settings = MailSettings(server_imap=form.server_imap.data,
+        mail_settings = MailSettings(id_owner=current_user.id,
+                                     server_imap=form.server_imap.data,
                                      server_smpt=form.server_smpt.data,
                                      port=587,
                                      tls=True,
@@ -208,7 +246,8 @@ def add_google_ss_settings():
         print(form_googlesheets.spreadsheets_id.data)
         data = json.load(form_googlesheets.credential_file.data)
         ss_settings = Spreadsheets(spreadsheets_id=form_googlesheets.spreadsheets_id.data,
-                                   credential_file=data)
+                                   credential_file=data,
+                                   id_owner=current_user.id)
         # mail_settings.set_mailpassword(form.mail_password.data)
         db.session.add(ss_settings)
         db.session.commit()
@@ -216,6 +255,23 @@ def add_google_ss_settings():
         return redirect(url_for('room'))
     return render_template('room.html')
 
+
+@app.route('/add_task', methods=['GET', 'POST'])
+@login_required
+def add_task():
+    form_listen = ConfigListenForm()
+    if form_listen.is_submitted():
+        print('Room validate_on_submit form')
+        task_listen = ListenTask(id_mail=form_listen.mail.data,
+                                 id_owner=current_user.id,
+                                 desc=form_listen.desc,
+                                 id_spreadsheets=form_listen.spreadsheat.data,
+                                 script=form_listen.script.data)
+        db.session.add(task_listen)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('room'))
+    return render_template('room.html')
 
 @celery.task(name='spreadsheets.processing')
 def processing(filename):

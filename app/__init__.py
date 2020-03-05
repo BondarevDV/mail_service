@@ -14,6 +14,8 @@ from flask_bootstrap import Bootstrap
 from flask_selery import make_celery
 from flask_mail import Mail
 import os
+
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
@@ -45,4 +47,4 @@ login.login_view = 'login'
 
 from app import routes, models
 
-db.create_all()
+#db.create_all()

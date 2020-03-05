@@ -1,10 +1,15 @@
+body {
+
+    background: #66FF99;
+}
+
 .tabs { width: 100%; padding: 0px; margin: 0 auto; }
 .tabs>input { display: none; }
 .tabs>div {
     display: none;
     padding: 12px;
-    border: 1px solid #C0C0C0;
-    background: #FFFFFF;
+    /* border: 1px solid #77dd77;*/
+    background: #66FF99;
 }
 .tabs>label {
     display: inline-block;
@@ -26,7 +31,8 @@
 #tab_1:checked ~ #txt_1,
 #tab_2:checked ~ #txt_2,
 #tab_3:checked ~ #txt_3,
-#tab_4:checked ~ #txt_4 { display: block; }
+#tab_4:checked ~ #txt_4,
+#tab_5:checked ~ #txt_5 { display: block; }
 
 body            { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
 a, h1, h2       { color: #000000; }

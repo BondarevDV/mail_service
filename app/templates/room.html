@@ -5,13 +5,13 @@
 
     <div class="tabs">
         <input type="radio" name="inset" value="" id="tab_0" checked>
-        <label for="tab_0">Прослушивание почты</label>
+        <label for="tab_0">Задача</label>
 
         <input type="radio" name="inset" value="" id="tab_1" checked>
-        <label for="tab_1">Добавить новую почту</label>
+        <label for="tab_1">Почта</label>
 
         <input type="radio" name="inset" value="" id="tab_2">
-        <label for="tab_2">Добавить новую таблицу Google</label>
+        <label for="tab_2">Таблица GOOGLE</label>
 
         <input type="radio" name="inset" value="" id="tab_3">
         <label for="tab_3">INFO Почта</label>
@@ -19,19 +19,27 @@
         <input type="radio" name="inset" value="" id="tab_4">
         <label for="tab_4">INFO GOOGLE</label>
 
+        <input type="radio" name="inset" value="" id="tab_5">
+        <label for="tab_5">INFO TASKS</label>
+
         <div id="txt_0">
-            <form action = "" method = post >
+            <form action = "{{ url_for('add_task') }}" method = post >
                 <fieldset>
-                    <legend>Personal information:</legend>
+                    <legend>Добавление задачи</legend>
                     {{ form_l.hidden_tag() }}
                     {{ form_l.mail.label }} <br>
                     {{ form_l.mail }} <br>
 
-                    {{ form_l.dir.label }} <br>
-                    {{ form_l.dir }} <br>
+                    {{ form_l.desc.label }} <br>
+                    {{ form_l.desc }} <br>
 
-                    {{ form_l.spreadsheats.label }} <br>
-                    {{ form_l.spreadsheats }} <br>
+                    {{ form_l.spreadsheet.label }} <br>
+                    {{ form_l.spreadsheet }} <br>
+
+                    {{ form_l.script.label }} <br>
+                    {{ form_l.script }} <br>
+
+
                     <br>
                     {{ form_l.submit() }}
                 </fieldset>
@@ -86,6 +94,12 @@
             </fieldset>
         </div>
         <div id="txt_4">
+            <fieldset>
+                    <legend>Доступные таблицы Google:</legend>
+                    {{ table_ss }}
+            </fieldset>
+        </div>
+        <div id="txt_5">
             <fieldset>
                     <legend>Доступные таблицы Google:</legend>
                     {{ table_ss }}
