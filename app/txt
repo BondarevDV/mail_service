@@ -1,1 +1,14 @@
-https://sta
+                let email_select = document.getElementById('mail');
+                let folder_select = document.getElementById('folder');
+
+                email_select.onchange = function() {
+                    email = email_select.value;
+                    fetch('/folders/' + email).then(function(response){
+                        response.json().then(function(data) {
+                            let optionHTML = '';
+                            for(let email of data.emails){
+                                optionHTML += '<option value="' + email.id + '">' + email.name + '</option>';
+                            }
+                            folder_select.innerHTML = optionHTML;
+                        })
+                }

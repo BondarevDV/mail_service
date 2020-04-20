@@ -35,6 +35,9 @@ class SheetNotSetError(SpreadsheetError):
     pass
 
 
+
+
+
 class Spreadsheet:
     def __init__(self, jsonKeyFileName, debugMode = False):
         self.debugMode = debugMode
@@ -241,6 +244,22 @@ class Spreadsheet:
         self.requests.append({"updateCells": {"range": self.toGridRange(cellsRange),
                                               "rows": [{"values": [{"userEnteredFormat": cellFormat} for cellFormat in rowFormats]} for rowFormats in formatsJSON],
                                               "fields": fields}})
+
+
+class SpreadsheetJSONData(Spreadsheet):
+    def __init__(self, jsonData, debugMode=False):
+        self.debugMode = debugMode
+        self.credentials = ServiceAccountCredentials.from_json_keyfile_dict(jsonData, ['https://www.googleapis.com/auth/spreadsheets',
+                                                                                       'https://www.googleapis.com/auth/drive'])
+        self.httpAuth = self.credentials.authorize(httplib2.Http())
+        self.service = apiclient.discovery.build('sheets', 'v4', http=self.httpAuth)
+        self.driveService = None  # Needed only for sharing
+        self.spreadsheetId = None
+        self.sheetId = None
+        self.sheetTitle = None
+        self.requests = []
+        self.valueRanges = []
+        self.spreadsheet_info = None
 
 
 # === Tests for class Spreadsheet ===

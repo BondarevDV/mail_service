@@ -10,8 +10,11 @@ from flask import current_app
 import redis
 from flask_table import Table, Col, ButtonCol, LinkCol, BoolCol
 from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation
+
+
+# from sqlalchemy.ext.declarative import declarative_base
+#
+# from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation, session
 
 SCHEMA = 'debug'
 
@@ -32,7 +35,9 @@ SCHEMA = 'debug'
 # Model.query = db_session.query_property()
 
 
-class ResultsMailSettings(Table):
+
+
+class ResultsEMailSettings(Table):
     id = Col('id', show=False)
     id_owner = Col('id_owner', show=False)
     # spreadsheets_id = Col('spreadsheets_id')
@@ -53,6 +58,14 @@ class ResultsgoodleSS(Table):
     delete = ButtonCol('Delete', 'delete_ss', url_kwargs=dict(id='id'))
 
 
+class ResultsTask(Table):
+    id = Col('id', show=True)
+    desc = Col('Описание задачи')
+    status = Col('status')
+    spreadsheets_id = Col('GOOGLE spreadsheets_id')
+    email = Col('email')
+    delete = ButtonCol('Delete', 'delete_task', url_kwargs=dict(id='id'))
+    start = ButtonCol('Start', 'update_task_status', url_kwargs=dict(id='id'))
 
 
 @login.user_loader
@@ -60,9 +73,19 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-class MailSettings(db.Model):
+class Report(db.model):
     __table_args__ = {'schema': SCHEMA}
-    __tablename__ = 'mail_settings'
+    __tablename__ = 'report'
+    id = db.Column(db.Integer, primary_key=True)
+    id_task = db.Column(db.Integer, db.ForeignKey('{}.listen_task.id'.format(SCHEMA)))
+    status_complete = db.Column(db.Boolean, default=False)
+    datetime = db.Column(db.DateTime, nullable=False)
+    info = db.Column(JSON, nullable=True)
+
+
+class EMailSettings(db.Model):
+    __table_args__ = {'schema': SCHEMA}
+    __tablename__ = 'email_settings'
     id_owner = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
     id = db.Column(db.Integer, primary_key=True)
     server_smpt = db.Column(db.String(300))
@@ -71,16 +94,16 @@ class MailSettings(db.Model):
     tls = db.Column(db.Boolean)
     email = db.Column(db.String(300))
     email_default = db.Column(db.String(300))
-    mail_password_hash = db.Column(db.String(300))
+    key_access_email = db.Column(db.String(300))
 
     def __repr__(self):
         return '<mail_settings {}>'.format(self.id)
-
-    def set_mailpassword(self, password):
-        self.mail_password_hash = generate_password_hash(password)
-
-    def check_mailpassword(self, password):
-        return check_password_hash(self.mail_password_hash, password)
+    #
+    # def set_mailpassword(self, password):
+    #     self.mail_password_hash = generate_password_hash(password)
+    #
+    # def check_mailpassword(self, password):
+    #     return check_password_hash(self.mail_password_hash, password)
 
 
 class Spreadsheets(db.Model):
@@ -110,10 +133,14 @@ class Message(db.Model):
 class ListenTask(db.Model):
     __table_args__ = {'schema': SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
-    desc = db.Column(db.String(256), index=True, unique=True)
-    id_mail = db.Column(db.Integer, db.ForeignKey('{}.mail_settings.id'.format(SCHEMA)))
+    name = db.Column(db.String(256), index=True, unique=True)
+    desc = db.Column(db.String(256), nullable=False)
+    status = db.Column(db.Boolean, default=False)
+    folder = db.Column(db.String(256), nullable=False)
+    id_email = db.Column(db.Integer, db.ForeignKey('{}.email_settings.id'.format(SCHEMA)))
     id_owner = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
     id_spreadsheets = db.Column(db.Integer, db.ForeignKey('{}.spreadsheets.id'.format(SCHEMA)))
+    reports = db.relationship('Report', backref='ListenTask', lazy='dynamic')
 
     def __repr__(self):
         return '<Listen {}>'.format(self.id)
@@ -159,8 +186,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
 
     table_ss = db.relationship('Spreadsheets', backref='User', lazy='dynamic')
-    emails = db.relationship('MailSettings', backref='User', lazy='dynamic')
+    emails = db.relationship('EMailSettings', backref='User', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    reports = db.relationship('Report', backref='User', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -187,3 +215,11 @@ class User(UserMixin, db.Model):
                                     complete=False).first()
 
 # event.listen(db_session, 'after_flush', search.update_model_based_indexes)
+
+
+# if __name__ == '__main__':
+#     db.drop_all()
+#     db.create_all()
+#     db.session.add(User(username="Frank"))
+#     db.session.commit()
+#     app.run(debug=True)

@@ -1,6 +1,7 @@
 import time
 from rq import get_current_job
 
+
 def example(seconds):
     job = get_current_job()
     print('Starting task')

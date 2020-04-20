@@ -2,27 +2,34 @@ from flask_wtf import FlaskForm
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, Form, \
     TextField, TextAreaField, validators, SubmitField, FileField, SelectField
+
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 from wtforms.validators import Required
 
 
+def query_test():
+    print("hello")
+
+
 class ConfigListenForm(FlaskForm):
-    EMPTY = []
-    mail = SelectField('Доступная почта:', choices=EMPTY)
-    desc = StringField('Описание: ', validators=[DataRequired()])
+    EMPTY = [('aim', 'AIM'), ('msn', 'MSN')]
+    email = SelectField('Доступная почта:', choices=EMPTY)
+    name = StringField('Имя задачи: ', validators=[DataRequired()])
+    desc = TextAreaField('Описание: ', validators=[DataRequired()])
     spreadsheet = SelectField('Доступные таблицы google:', choices=EMPTY)
     script = TextAreaField('Скрипт', validators=[DataRequired()])
+    folder = SelectField('Доступные папки', choices=EMPTY)
     submit = SubmitField('Добавить')
 
 
 class SaveMailSettingsForm(FlaskForm):
-    server_smpt = StringField('server_smpt: ', validators=[DataRequired()])
-    server_imap = StringField('server_imap: ', validators=[DataRequired()])
+    server_smpt = StringField('Сервер SMPT: ', validators=[DataRequired()])
+    server_imap = StringField('Сервер IMAP: ', validators=[DataRequired()])
     email = StringField('email: ', validators=[DataRequired()])
-    mail_password = PasswordField('Password', validators=[DataRequired()])
-    mail_password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('mail_password')])
+    key_access_email = StringField('Ключ доступа:', validators=[DataRequired()])
     submit = SubmitField('Добавить')
 
 

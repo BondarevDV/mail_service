@@ -7,7 +7,7 @@
         <input type="radio" name="inset" value="" id="tab_0" checked>
         <label for="tab_0">Задача</label>
 
-        <input type="radio" name="inset" value="" id="tab_1" checked>
+        <input type="radio" name="inset" value="" id="tab_1" >
         <label for="tab_1">Почта</label>
 
         <input type="radio" name="inset" value="" id="tab_2">
@@ -24,28 +24,55 @@
 
         <div id="txt_0">
             <form action = "{{ url_for('add_task') }}" method = post >
+                {{ form_l.hidden_tag() }}
                 <fieldset>
                     <legend>Добавление задачи</legend>
-                    {{ form_l.hidden_tag() }}
-                    {{ form_l.mail.label }} <br>
-                    {{ form_l.mail }} <br>
 
-                    {{ form_l.desc.label }} <br>
-                    {{ form_l.desc }} <br>
+                            {{ form_l.csrf_token }}
+                            {{ form_l.name.label }} <br>
+                            {{ form_l.name }} <br>
 
-                    {{ form_l.spreadsheet.label }} <br>
-                    {{ form_l.spreadsheet }} <br>
+                            {{ form_l.desc.label }} <br>
+                            {{ form_l.desc }} <br>
 
-                    {{ form_l.script.label }} <br>
-                    {{ form_l.script }} <br>
+                            {{ form_l.email.label }} <br>
+                            {{ form_l.email }} <br>
+
+                            {{ form_l.folder.label }} <br>
+                            {{ form_l.folder }} <br>
+
+                            {{ form_l.spreadsheet.label }} <br>
+                            {{ form_l.spreadsheet }} <br>
+
+                            {{ form_l.script.label }} <br>
+                            {{ form_l.script }} <br>
 
 
                     <br>
                     {{ form_l.submit() }}
                 </fieldset>
             </form>
-
         </div>
+        <script>
+                let email_select = document.getElementById('email');
+                let folder_select = document.getElementById('folder');
+
+                email_select.onchange = function() {
+                    email = email_select.value;
+                    alert(email);
+                    fetch('/folders/' + email).then(function(response){
+                        response.json().then(function(data) {
+                            let optionHTML = '';
+                            for(let folder of data.folders){
+                                optionHTML += '<option value="' + folder.id + '">' + folder.name + '</option>';
+                            }
+                            folder_select.innerHTML = optionHTML;
+                         });
+                     });
+
+                }
+
+        </script>
         <div id="txt_1">
             <form action = "{{ url_for('add_mail_settings') }}" method = post >
                 {{ form_mail.hidden_tag() }}
@@ -64,10 +91,8 @@
                    {{ form_mail.email }}
                    <br>
 
-                   {{ form_mail.mail_password.label }}<br>
-                   {{ form_mail.mail_password }}<br>
-                   {{ form_mail.mail_password2.label }}<br>
-                   {{ form_mail.mail_password2 }}<br>
+                   {{ form_mail.key_access_email.label }}<br>
+                   {{ form_mail.key_access_email }}<br>
                    <br>
                    <p>{{ form_mail.submit() }}</p>
                 </fieldset>
@@ -77,7 +102,7 @@
             <form action="{{ url_for('add_google_ss_settings') }}" method=post enctype=multipart/form-data>
                 <fieldset>
                     <legend>Добавить новую таблицу Google:</legend>
-                          {{ form_mail.hidden_tag() }}
+                          {{ form_gs.hidden_tag() }}
                           {{ form_gs.spreadsheets_id.label }}<br>
                           {{ form_gs.spreadsheets_id }}<br>
 
@@ -92,6 +117,7 @@
                     <legend>Доступные почты:</legend>
                     {{ table }}
             </fieldset>
+
         </div>
         <div id="txt_4">
             <fieldset>
@@ -101,8 +127,8 @@
         </div>
         <div id="txt_5">
             <fieldset>
-                    <legend>Доступные таблицы Google:</legend>
-                    {{ table_ss }}
+                    <legend>Доступные задачи:</legend>
+                    {{ table_tasks }}
             </fieldset>
         </div>
     </div>
