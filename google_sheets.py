@@ -13,6 +13,7 @@ import apiclient.discovery
 import googleapiclient.errors
 from oauth2client.service_account import ServiceAccountCredentials
 import logger
+from cache import Cache
 
 LOG_INFO_GOOGSHEETS = logger.init("INFO.log")
 
@@ -35,7 +36,14 @@ class SheetNotSetError(SpreadsheetError):
     pass
 
 
+class MemoryCache(Cache):
+    _CACHE = {}
 
+    def get(self, url):
+        return MemoryCache._CACHE.get(url)
+
+    def set(self, url, content):
+        MemoryCache._CACHE[url] = content
 
 
 class Spreadsheet:
@@ -44,7 +52,7 @@ class Spreadsheet:
         self.credentials = ServiceAccountCredentials.from_json_keyfile_name(jsonKeyFileName, ['https://www.googleapis.com/auth/spreadsheets',
                                                                                               'https://www.googleapis.com/auth/drive'])
         self.httpAuth = self.credentials.authorize(httplib2.Http())
-        self.service = apiclient.discovery.build('sheets', 'v4', http = self.httpAuth)
+        self.service = apiclient.discovery.build('sheets', 'v4', http=self.httpAuth, cache_discovery=False)
         self.driveService = None  # Needed only for sharing
         self.spreadsheetId = None
         self.sheetId = None

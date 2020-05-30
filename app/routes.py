@@ -274,7 +274,7 @@ def start_task(id):
         .filter_by(id_owner=current_user.id).filter_by(id=id).first()
 
     init_looker_multythread(spreadsheetId=task.spreadsheets_id,
-                            google_sheets_creadential_json=json.dumps(task.credential_file),
+                            google_sheets_creadential_json=task.credential_file,
                             imap_server=task.server_imap,
                             email=task.email,
                             passwd=task.key_access_email,
@@ -293,14 +293,15 @@ def start_task(id):
         .add_columns(EMailSettings.server_imap) \
         .add_columns(EMailSettings.key_access_email) \
         .filter_by(id=id).first()
-    # logger.info(" id = %s" % task.id)
-    # logger.info(" folder = %s" % task.folder)
-    # logger.info(" spreadsheets_id = %s" % task.spreadsheets_id)
+    #print(" id = %s" % task.id)
+    logger.info(" id = %s" % task.id)
+    logger.info(" folder = %s" % task.folder)
+    logger.info(" spreadsheets_id = %s" % task.spreadsheets_id)
     # logger.info(" credential_file = %s" % task.credential_file)
-    # logger.info(" email = %s" % task.email)
-    logger.info(" credential_file type = %s" % type(task.credential_file))
+    logger.info(" email = %s" % task.email)
+    logger.info(" folder = %s" % task.folder)
     init_looker_multythread(spreadsheetId=task.spreadsheets_id,
-                            google_sheets_creadential_json=Spreadsheets.credential_file,
+                            google_sheets_creadential_json=task.credential_file,
                             imap_server=task.server_imap,
                             email=task.email,
                             passwd=task.key_access_email,

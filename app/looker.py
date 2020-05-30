@@ -388,6 +388,8 @@ def init_looker_multythread(spreadsheetId, google_sheets_creadential_json, imap_
 
     # Ждем завершения работы очереди
     queue.join()
+    IMAP4_server.logout()
+
 
 
 def b64padanddecode(b):
@@ -536,7 +538,18 @@ def test_get_listpaths():
 
 if __name__ == "__main__":
     try:
-
+        # print('Прослушивание почты...')
+        # params = config()
+        # spreadsheetId = params.get('spreadsheetid', None)
+        # GOOGLE_CREDENTIALS_FILE = params.get('credential_file', None)
+        #
+        # GOOGLE_CREDENTIALS_DATA = get_obj_json_from_file(GOOGLE_CREDENTIALS_FILE)
+        # init_looker_multythread(spreadsheetId=spreadsheetId,
+        #                         google_sheets_creadential_json=GOOGLE_CREDENTIALS_DATA,
+        #                         imap_server='imap.yandex.ru',
+        #                         email='d.bondarev.86@yandex.ru',
+        #                         passwd='alpglyneshancphh',
+        #                         folder='test2')
         #test_get_listpaths()
         test_looker()
         #test_get_listpaths()
