@@ -86,7 +86,7 @@ def register():
 @app.route('/delete_mail/<id>', methods=['GET', 'POST'])
 @login_required
 def delete_mail(id):
-    mail = MailSettings.query.get(id)
+    mail = EMailSettings.query.get(id)
     db.session.delete(mail)
     db.session.commit()
     return redirect(url_for('room'))
@@ -116,6 +116,8 @@ def folders(email_id):
     print('email_id = ', email_id)
     email_settings = EMailSettings.query.filter_by(id_owner=current_user.id).filter_by(id=email_id).first()
     print(email_settings.server_imap)
+    print(email_settings.key_access_email)
+    print(email_settings.email)
     folders = get_list_dir(imap_host=email_settings.server_imap,
                            login=email_settings.email,
                            password=email_settings.key_access_email)
@@ -155,6 +157,7 @@ def room():
         .add_columns(ListenTask.id) \
         .add_columns(ListenTask.desc) \
         .add_columns(ListenTask.status) \
+        .add_columns(ListenTask.datetime) \
         .add_columns(Spreadsheets.spreadsheets_id)\
         .add_columns(EMailSettings.email)\
         .filter_by(id_owner=current_user.id).order_by(ListenTask.id)
@@ -271,7 +274,7 @@ def start_task(id):
         .filter_by(id_owner=current_user.id).filter_by(id=id).first()
 
     init_looker_multythread(spreadsheetId=task.spreadsheets_id,
-                            google_sheets_creadential_json=task.credential_file,
+                            google_sheets_creadential_json=json.dumps(task.credential_file),
                             imap_server=task.server_imap,
                             email=task.email,
                             passwd=task.key_access_email,
@@ -290,9 +293,14 @@ def start_task(id):
         .add_columns(EMailSettings.server_imap) \
         .add_columns(EMailSettings.key_access_email) \
         .filter_by(id=id).first()
-
+    # logger.info(" id = %s" % task.id)
+    # logger.info(" folder = %s" % task.folder)
+    # logger.info(" spreadsheets_id = %s" % task.spreadsheets_id)
+    # logger.info(" credential_file = %s" % task.credential_file)
+    # logger.info(" email = %s" % task.email)
+    logger.info(" credential_file type = %s" % type(task.credential_file))
     init_looker_multythread(spreadsheetId=task.spreadsheets_id,
-                            google_sheets_creadential_json=task.credential_file,
+                            google_sheets_creadential_json=Spreadsheets.credential_file,
                             imap_server=task.server_imap,
                             email=task.email,
                             passwd=task.key_access_email,
@@ -325,6 +333,8 @@ def periodic_task():
     """periodic_task проверяет таблицу с задачами и тайммерами и создаёт задачу"""
     tasks = ListenTask.query.all()
     logger.info("Start periodic_task")
+    for task in tasks:
+        print(task.status)
     for task in tasks:
         if task.status:
             complete_task.delay(task.id)

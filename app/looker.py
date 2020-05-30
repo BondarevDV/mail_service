@@ -500,6 +500,7 @@ def test_looker():
     GOOGLE_CREDENTIALS_FILE = params.get('credential_file', None)
 
     GOOGLE_CREDENTIALS_DATA = get_obj_json_from_file(GOOGLE_CREDENTIALS_FILE)
+    print("type=", type(GOOGLE_CREDENTIALS_DATA))
     google_sheets_creadential_json = GOOGLE_CREDENTIALS_DATA
     # while True:
     #     init_looker_multythread(spreadsheetId=spreadsheetId,
@@ -510,7 +511,7 @@ def test_looker():
     #                        folder='test2')
     imap_server = 'imap.yandex.ru'
     email = 'd.bondarev.86@yandex.ru'
-    passwd = 'kpwoltwjqpsboxde'
+    passwd = 'alpglyneshancphh'
     folder = 'test2'
     queue = Queue()
     IMAP4_server = imaplib.IMAP4_SSL(imap_server)
@@ -530,13 +531,15 @@ def test_looker():
 
 
 def test_get_listpaths():
-    print(get_list_dir(imap_host='imap.yandex.ru', login='d.bondarev.86@yandex.ru', password='kpwoltwjqpsboxde'))
+    print(get_list_dir(imap_host='imap.yandex.ru', login='d.bondarev.86@yandex.ru', password='alpglyneshancphh'))
 
 
 if __name__ == "__main__":
     try:
+
         #test_get_listpaths()
         test_looker()
+        #test_get_listpaths()
     except KeyboardInterrupt:
         print('Скрипт остановлен...')
 

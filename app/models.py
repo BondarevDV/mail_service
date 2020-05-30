@@ -62,6 +62,7 @@ class ResultsTask(Table):
     id = Col('id', show=True)
     desc = Col('Описание задачи')
     status = Col('status')
+    datetime = Col('Время изменения задачи')
     spreadsheets_id = Col('GOOGLE spreadsheets_id')
     email = Col('email')
     delete = ButtonCol('Delete', 'delete_task', url_kwargs=dict(id='id'))
@@ -73,11 +74,12 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-class Report(db.model):
+class Report(db.Model):
     __table_args__ = {'schema': SCHEMA}
     __tablename__ = 'report'
     id = db.Column(db.Integer, primary_key=True)
     id_task = db.Column(db.Integer, db.ForeignKey('{}.listen_task.id'.format(SCHEMA)))
+    id_user = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
     status_complete = db.Column(db.Boolean, default=False)
     datetime = db.Column(db.DateTime, nullable=False)
     info = db.Column(JSON, nullable=True)
@@ -135,6 +137,7 @@ class ListenTask(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), index=True, unique=True)
     desc = db.Column(db.String(256), nullable=False)
+    datetime = db.Column(db.DateTime(), default=datetime.utcnow)
     status = db.Column(db.Boolean, default=False)
     folder = db.Column(db.String(256), nullable=False)
     id_email = db.Column(db.Integer, db.ForeignKey('{}.email_settings.id'.format(SCHEMA)))
@@ -162,6 +165,7 @@ class Task(db.Model):
     id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(128), index=True)
     description = db.Column(db.String(128))
+    datetime = db.Column(db.DateTime(), default=datetime.utcnow)
     status = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('{}.user.id'.format(SCHEMA)))
     complete = db.Column(db.Boolean, default=False)

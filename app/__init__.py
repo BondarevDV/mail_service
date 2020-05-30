@@ -36,6 +36,8 @@ bootstart = Bootstrap(app)
 celery = make_celery(app)
 
 db = SQLAlchemy(app)
+
+print(db)
 migrate = Migrate(app, db)
 
 mail = Mail(app)
@@ -47,4 +49,5 @@ login.login_view = 'login'
 
 from app import routes, models
 
-db.create_all()
+#db.create_all()
+#db.drop_all()
