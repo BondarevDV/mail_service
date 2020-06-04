@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,8 +13,8 @@
     </head>
     <body>
 
-
-            <div>
+            {% block navbar %}
+            <div class="navbar navbar-fixed-top">
                 WARM HOME:
                 <a href="{{ url_for('index') }}">Home</a>
                 {% if current_user.is_anonymous %}
@@ -24,7 +25,10 @@
                 {% endif %}
                 <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
             </div>
+            {% endblock %}
         <hr>
-        {% block content %}{% endblock %}
+        {% block content %}
+
+            {% endblock %}
     </body>
 </html>

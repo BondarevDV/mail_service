@@ -12,7 +12,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, EMailSettings, ResultsEMailSettings, Spreadsheets, ResultsgoodleSS, ListenTask, ResultsTask
 from werkzeug.utils import secure_filename
-from app.looker import get_list_dir, init_looker_multythread
+from app.looker import get_list_dir, init_looker_multythread, init_looker
 from flask_selery import logger
 import logger as MYLOG
 import json
@@ -29,10 +29,21 @@ from sqlalchemy import event
 
 LOG_ROUTES = MYLOG.init("ROUTES.log")
 
+# @app.route('/')
+# @app.route('/index')
+# def index():
+#     return render_template('base_bootstrap.html', title='Home')
+
+
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('index.html', title='Home')
+
+
+@app.route('/base_bootstrap')
+def base_bootstrap():
+    return render_template('base_bootstrap.html', title='Home')
 
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -35,8 +35,6 @@ SCHEMA = 'debug'
 # Model.query = db_session.query_property()
 
 
-
-
 class ResultsEMailSettings(Table):
     id = Col('id', show=False)
     id_owner = Col('id_owner', show=False)

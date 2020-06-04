@@ -334,7 +334,7 @@ def get_data_email_message(name_folder, IMAP4_server):
             while type(raw_email) is int:
                 num += 1
                 raw_email = data[num][1]
-                print("lala")
+                print("ERROR READER EMAILS")
             LOG.error(raw_email)
             email_message = email.message_from_bytes(raw_email)
             date_text = base64.b64decode(email_message['SUBJECT'].replace('?UTF-8?B?', '')).decode("utf-8", "replace")
@@ -352,6 +352,8 @@ def init_looker(spreadsheetId, google_sheets_creadential_json, imap_server, emai
     IMAP4_server = imaplib.IMAP4_SSL(imap_server)
     IMAP4_server.login(email, passwd)
     mails_info = get_data_email_message(folder, IMAP4_server)
+    if mails_info is None:
+        return None
     for mail in mails_info:
         if mail is not None:
             data = list()
@@ -365,12 +367,15 @@ def init_looker(spreadsheetId, google_sheets_creadential_json, imap_server, emai
             set_cellformat(spreadsheetId, google_sheets_creadential_json)
         else:
             print("Mail is not found")
+    IMAP4_server.logout()
 
 
 def init_looker_multythread(spreadsheetId, google_sheets_creadential_json, imap_server, email, passwd, folder):
     IMAP4_server = imaplib.IMAP4_SSL(imap_server)
     IMAP4_server.login(email, passwd)
     emails_info = get_data_email_message(folder, IMAP4_server)
+    if emails_info is None:
+        return None
     """
     Запускаем программу
     """
