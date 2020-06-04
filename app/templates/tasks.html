@@ -1,0 +1,55 @@
+{% extends "base_bootstrap.html" %}
+
+{% block content %}
+          <script>
+                let email_select = document.getElementById('email');
+                let folder_select = document.getElementById('folder');
+
+                email_select.onchange = function() {
+                    email = email_select.value;
+                    alert(email);
+                    fetch('/folders/' + email).then(function(response){
+                        response.json().then(function(data) {
+                            let optionHTML = '';
+                            for(let folder of data.folders){
+                                optionHTML += '<option value="' + folder.id + '">' + folder.name + '</option>';
+                            }
+                            folder_select.innerHTML = optionHTML;
+                         });
+                     });
+
+                }
+
+        </script>
+        <form action = "{{ url_for('add_task') }}" method = post >
+            {{ form.csrf_token }}
+            {{ form_l.hidden_tag() }}
+            <fieldset>
+                <legend>Добавление задачи</legend>
+
+                        {{ form_l.csrf_token }}
+                        {{ form_l.name.label }} <br>
+                        {{ form_l.name }} <br>
+
+                        {{ form_l.desc.label }} <br>
+                        {{ form_l.desc }} <br>
+
+                        {{ form_l.email.label }} <br>
+                        {{ form_l.email }} <br>
+
+                        {{ form_l.folder.label }} <br>
+                        {{ form_l.folder }} <br>
+
+                        {{ form_l.spreadsheet.label }} <br>
+                        {{ form_l.spreadsheet }} <br>
+
+                        {{ form_l.script.label }} <br>
+                        {{ form_l.script }} <br>
+
+
+                <br>
+                {{ form_l.submit() }}
+            </fieldset>
+        </form>
+
+{% endblock %}

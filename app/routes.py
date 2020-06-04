@@ -41,9 +41,36 @@ def index():
     return render_template('index.html', title='Home')
 
 
-@app.route('/base_bootstrap')
-def base_bootstrap():
-    return render_template('base_bootstrap.html', title='Home')
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
+
+
+@app.route('/tasks')
+@login_required
+def tasks():
+    form_listen = ConfigListenForm()
+    ss = Spreadsheets.query.filter_by(id_owner=current_user.id).all()
+    emails = EMailSettings.query.filter_by(id_owner=current_user.id).all()
+    form_listen.spreadsheet.choices = [(item.id, item.spreadsheets_id) for item in ss]
+    form_listen.email.choices = [(item.id, item.email) for item in emails]
+    return render_template('tasks.html', form_l=form_listen)
+
+
+@app.route('/google_ss')
+@login_required
+def google_ss():
+    form_googlesheets = spreadsheetForm()
+    return render_template('google_ss.html', form_gs=form_googlesheets)
+
+
+@app.route('/mail_settings')
+@login_required
+def mail_settings():
+    # user = User.query.filter_by(id=current_user.id).first()
+    form = SaveMailSettingsForm()
+    return render_template('mail_settings.html', form_mail=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -58,7 +85,7 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('room'))
+        return redirect(url_for('profile'))
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -84,13 +111,19 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
+    print("username = ", form.username.data)
+    print("email = ", form.email.data)
+    print("password = ", form.password.data)
     if form.validate_on_submit():
+
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
+    else:
+        print('Error validate')
     return render_template('register.html', title='Register', form=form)
 
 
@@ -100,7 +133,7 @@ def delete_mail(id):
     mail = EMailSettings.query.get(id)
     db.session.delete(mail)
     db.session.commit()
-    return redirect(url_for('room'))
+    return redirect(url_for('tables'))
 
 
 @app.route('/delete_ss/<id>', methods=['GET', 'POST'])
@@ -109,7 +142,7 @@ def delete_ss(id):
     ss = Spreadsheets.query.get(id)
     db.session.delete(ss)
     db.session.commit()
-    return redirect(url_for('room'))
+    return redirect(url_for('tables'))
 
 
 @app.route('/delete_task/<id>', methods=['GET', 'POST'])
@@ -118,7 +151,7 @@ def delete_task(id):
     task = ListenTask.query.get(id)
     db.session.delete(task)
     db.session.commit()
-    return redirect(url_for('room'))
+    return redirect(url_for('tables'))
 
 
 @app.route('/folders/<email_id>', methods=['GET', 'POST'])
@@ -141,6 +174,38 @@ def folders(email_id):
         return jsonify({'folders': list_obj_folders})
     else:
         return jsonify({'folders': [{'id': 0, 'name': 'ERROR ACCESS'}, ]})
+
+
+@app.route('/tables', methods=['GET', 'POST'])
+@login_required
+def tables():
+    user = User.query.filter_by(id=current_user.id).first()
+    items = EMailSettings.query.filter_by(id_owner=current_user.id)
+    table = ResultsEMailSettings(items)
+    table.border = True
+
+    items_ss = Spreadsheets.query.filter_by(id_owner=current_user.id)
+    table_ss = ResultsgoodleSS(items_ss)
+    table_ss.border = True
+
+    items_tasks = ListenTask.query.join(EMailSettings, (ListenTask.id_email == EMailSettings.id))\
+        .join(Spreadsheets, (ListenTask.id_spreadsheets == Spreadsheets.id)) \
+        .add_columns(ListenTask.id) \
+        .add_columns(ListenTask.desc) \
+        .add_columns(ListenTask.status) \
+        .add_columns(ListenTask.datetime) \
+        .add_columns(Spreadsheets.spreadsheets_id)\
+        .add_columns(EMailSettings.email)\
+        .filter_by(id_owner=current_user.id).order_by(ListenTask.id)
+    table_tasks = ResultsTask(items_tasks)
+    table_tasks.border = True
+
+    return render_template('tables.html',
+                           title='tables',
+                           table=table,
+                           table_ss=table_ss,
+                           table_tasks=table_tasks,
+                           user=user)
 
 
 @app.route('/room', methods=['GET', 'POST'])
@@ -203,8 +268,8 @@ def add_mail_settings():
         db.session.add(email_settings)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('room'))
-    return render_template('room.html')
+        return redirect(url_for('mail_settings'))
+    return render_template('mail_settings.html')
 
 
 @app.route('/add_google_ss_settings', methods=['GET', 'POST'])
@@ -222,22 +287,22 @@ def add_google_ss_settings():
         db.session.add(ss_settings)
         db.session.commit()
         flash('Congratulations, you are add google sheets!')
-        return redirect(url_for('room'))
-    return render_template('room.html')
+        return redirect(url_for('google_ss'))
+    return render_template('google_ss.html')
 
 
-@event.listens_for(ListenTask, 'after_insert')
-def event_after_insert(mapper, connection, target):
-    # Здесь будет очень важная бизнес логика
-    print('event_after_insert: ', current_user)
-    print('target: ', target.id)
-
-
-@event.listens_for(ListenTask, 'after_update')
-def event_after_update(mapper, connection, target):
-    # Здесь будет очень важная бизнес логика
-    print('receive_after_update : ', current_user)
-    print('target: ', target.id)
+# @event.listens_for(ListenTask, 'after_insert')
+# def event_after_insert(mapper, connection, target):
+#     # Здесь будет очень важная бизнес логика
+#     print('event_after_insert: ', current_user)
+#     print('target: ', target.id)
+#
+#
+# @event.listens_for(ListenTask, 'after_update')
+# def event_after_update(mapper, connection, target):
+#     # Здесь будет очень важная бизнес логика
+#     print('receive_after_update : ', current_user)
+#     print('target: ', target.id)
 
 
 @app.route('/update_task_status/<id>', methods=['GET', 'POST'])
@@ -246,7 +311,7 @@ def update_task_status(id):
     task_status = ListenTask.query.get(id).status
     ListenTask.query.filter_by(id=id).update({'status': (not task_status)})
     db.session.commit()
-    return redirect(url_for('room'))
+    return redirect(url_for('tables'))
 
 
 @app.route('/add_task', methods=['GET', 'POST'])
@@ -266,8 +331,8 @@ def add_task():
         db.session.add(task_listen)
         db.session.commit()
         flash('Congratulations, you are add task!')
-        return redirect(url_for('room'))
-    return render_template('room.html')
+        return redirect(url_for('tasks'))
+    return render_template('tasks.html')
 
 
 @app.route('/start_task/<id>', methods=['GET', 'POST'])
@@ -290,7 +355,7 @@ def start_task(id):
                             email=task.email,
                             passwd=task.key_access_email,
                             folder=task.folder)
-    return redirect(url_for('room'))
+    return redirect(url_for('tasks'))
 
 
 def start_task(id):
