@@ -1,34 +1,169 @@
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/tabs.css') }}">
-        {% if title %}
-        <title>{{ title }} - MicroService</title>
-        {% else %}
-        <title>Welcome to WARM HOME</title>
-        {% endif %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <script src='/js/main.js'></script>
-    </head>
-    <body>
+    {% extends 'bootstrap/base.html' %}
+    {% block title %} <title>Material Design for Bootstrap</title>{% endblock %}
+    {% block styles %}
+          <!-- MDB icon -->
+          <link rel= "stylesheet" href= "{{ url_for('static',filename='img/mdb-favicon.ico') }}" type="image/x-icon">
+          <!-- Font Awesome -->
+          <link rel= "stylesheet" href= "https://use.fontawesome.com/releases/v5.11.2/css/all.css" >
+          <!-- Google Fonts Roboto -->
+          <link rel= "stylesheet" href= "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" >
 
-            {% block navbar %}
-            <div class="navbar navbar-fixed-top">
-                WARM HOME:
-                <a href="{{ url_for('index') }}">Home</a>
-                {% if current_user.is_anonymous %}
-                <a href="{{ url_for('login') }}">Login</a>
-                {% else %}
-                <a href="{{ url_for('logout') }}">Logout</a>
-                <a href="{{ url_for('room') }}">Room</a>
-                {% endif %}
-                <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
-            </div>
-            {% endblock %}
-        <hr>
-        {% block content %}
+          <!-- Bootstrap core CSS -->
+          <link rel= "stylesheet"  href= "{{ url_for('static',filename='css/bootstrap.min.css') }}" >
 
-            {% endblock %}
-    </body>
-</html>
+
+          <!-- Material Design Bootstrap -->
+          <link rel= "stylesheet"  href= "{{ url_for('static',filename='css/mdb.min.css') }}" >
+          <!-- Your custom styles (optional) -->
+          <link rel= "stylesheet"  href= "{{ url_for('static',filename='css/style.css') }}" >
+          <link rel= "stylesheet"  href= "http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" >
+    {% endblock %}
+
+
+{% block body %}
+<body class="grey lighten-3">
+
+  <!-- Start your project here-->
+  <header>
+         {% block navbar %}
+          <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+          
+              <div class="container-fluid">
+                  <a href="{{ url_for('index') }}" class="navbar-brand waves-effect" ><strong class="blue-text">Logo</strong></a>
+
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation"> 
+                      <span class="navbar-toggler-icon"></span>
+
+                  </button>
+                 <div class="collapse navbar-collapse" id="navbarContent">
+
+                        <ul class="navbar-nav mr-auto ">
+                          {% if current_user.is_anonymous %}
+                          <li class="nav-item ">
+                            <a  href="{{ url_for('login') }}" class="nav-link waves-effect">Login</a>
+                          </li>
+                          {% else %}
+                          <li class="nav-item ">
+                            <a  href="{{ url_for('logout') }}" class="nav-link waves-effect">Logout</a>
+                          </li>
+                          <li class="nav-item ">
+                            <a  href="{{ url_for('room') }}" class="nav-link waves-effect">Room</a>
+                          </li>
+                          {% endif %}
+                          <li class="nav-item ">
+                            <a  href="{{ url_for('register') }}" class="nav-link waves-effect">Register</a>
+                          </li>
+
+                        </ul>
+
+                        <ul class="navbar-nav nav-flex-icons"> 
+                          
+                          <li class="nav-item mr-2">
+                            <a href="https://facebook.com" class="nav-link waves-effect border border-ligth rounded">
+                              <i class="fa fa-facebook" aria-hidden="false"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item mr-2">
+                            <a href="https://twitter.com" class="nav-link waves-effect border border-ligth rounded">
+                              <i class="fa fa-twitter"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item mr-2">
+                            <a href="https://vk.com" class="nav-link waves-effect border border-ligth rounded">
+                              <i  class="fa fa-vk"></i> 
+                            </a>
+                          </li>
+
+                          <li class="nav-item mr-2">
+                            <a href="https://gihub.com" class="nav-link waves-effect border border-ligth rounded">
+                              <i  class="fa fa-github"></i> 
+                            </a>
+                          </li>
+
+                        </ul>
+                 </div>
+              </div>
+          </nav>
+
+          <div class="sidebar-fixed position-fixed fixed-top border border-light">
+                  <a href="#" class="logo-wrapper waves-effect ">
+                          <img src="https://mdbootstrap.com/img/logo/mdb-email.png" alt="" class="img-fluid">
+                  </a>   
+                  <div class="list-group list-group-flush">
+                          <a  href="#" class="list-group-item active waves-effect">
+                            <i  class="fa fa-pie-chart  mr-3"></i>Dashboard
+                          </a>
+                          <a  href="{{ url_for('profile') }}" class="list-group-item waves-effect">
+                            <i  class="fa fa-user mr-3"></i>Profile
+                          </a>
+                          <a  href="{{ url_for('tables') }}" class="list-group-item waves-effect">
+                            <i  class="fa fa-table mr-3"></i>Tables
+                          </a>
+                          <a  href="{{ url_for('tasks') }}" class="list-group-item waves-effect">
+                            <i  class="fa fa-map mr-3"></i>Tasks
+                          </a>
+
+                          <a  href="{{ url_for('mail_settings') }}" class="list-group-item waves-effect">
+                            <i  class="fa fa-money mr-3"></i>Mail settings
+                          </a>
+
+                           <a  href="{{ url_for('google_ss') }}" class="list-group-item waves-effect">
+                            <i  class="fa fa-money mr-3"></i>google spreadsheets
+                          </a>
+                  </div>
+          </div>
+
+  </header>
+  {% endblock %}
+  {% block content %}
+
+  <main class="pt-5 max-lg-5">
+         <div class="container-fluid mt-5">
+              <div class="card mb-4 wow fadeIn">
+                      <div class="card-body d-sm-flex justify-content-between">
+<!--                            <h4 class="mb-2 mb-sm-0 pt-1">-->
+<!--                                <a href="#">Home page</a>-->
+<!--                                <span>/</span>-->
+<!--                                <span>Dashboard</span>-->
+<!--                            </h4>-->
+
+                            <form class="d-flex justify-content-center">
+<!--                                    <input type="search" class="form-control" placeholder="Type your query">-->
+
+<!--                                    <button class="btn btn-primary btn-sm my-0 p" type="submit">-->
+<!--                                            <i  class="fa fa-search"></i>-->
+<!--                                    </button>-->
+
+
+
+
+                                     {% block app_content %}{% endblock %}
+                            </form>
+
+
+                      </div>
+
+              </div>
+         </div>
+
+  </main>
+{% endblock %}
+  <!-- End your project here-->
+
+  <!-- jQuery -->
+<!--  {% block scripts %}-->
+<!--  <script type="text/javascript" src="{{ url_for('static',filename='js/mdb.min.js') }}"></script>-->
+<!--  &lt;!&ndash; Bootstrap tooltips &ndash;&gt;-->
+<!--  <script type="text/javascript" src="{{ url_for('static',filename='js/popper.min.js') }}"></script>-->
+<!--  &lt;!&ndash; Bootstrap core JavaScript &ndash;&gt;-->
+<!--  <script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>-->
+<!--  &lt;!&ndash; MDB core JavaScript &ndash;&gt;-->
+<!--  <script type="text/javascript" src="{{ url_for('static',filename='js/mdb.min.js') }}"></script>-->
+<!--  &lt;!&ndash; Your custom scripts (optional) &ndash;&gt;-->
+<!--  <script type="text/javascript"></script>-->
+<!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
+<!--{% endblock %}-->
+</body>
+{% endblock %}
+

@@ -32,7 +32,7 @@ LOG_ROUTES = MYLOG.init("ROUTES.log")
 # @app.route('/')
 # @app.route('/index')
 # def index():
-#     return render_template('base_bootstrap.html', title='Home')
+#     return render_template('base.html', title='Home')
 
 
 @app.route('/')
@@ -76,9 +76,12 @@ def mail_settings():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     print('login')
+
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
+    print("username = ", form.username.data)
+    print("password = ", form.password.data)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
@@ -106,6 +109,27 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/test_register', methods=['GET', 'POST'])
+def test_register():
+    print("test_register")
+    if form.validate_on_submit():
+        print("username = ", form.username.data)
+        print("email = ", form.email.data)
+        print("password = ", form.password.data)
+        return 'Form Successfully Submitted!'
+    return render_template('index.html', form=form)
+    # if form.validate_on_submit():
+    #     user = User(username=form.username.data, email=form.email.data)
+    #     user.set_password(form.password.data)
+    #     db.session.add(user)
+    #     db.session.commit()
+    #     flash('Congratulations, you are now a registered user!')
+    #     return redirect(url_for('login'))
+    # else:
+    #     print('Error validate')
+    return render_template('register.html', title='Register', form=form)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -114,16 +138,15 @@ def register():
     print("username = ", form.username.data)
     print("email = ", form.email.data)
     print("password = ", form.password.data)
-    if form.validate_on_submit():
-
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
-    else:
-        print('Error validate')
+    # if form.validate_on_submit():
+    #     user = User(username=form.username.data, email=form.email.data)
+    #     user.set_password(form.password.data)
+    #     db.session.add(user)
+    #     db.session.commit()
+    #     flash('Congratulations, you are now a registered user!')
+    #     return redirect(url_for('login'))
+    # else:
+    #     print('Error validate')
     return render_template('register.html', title='Register', form=form)
 
 

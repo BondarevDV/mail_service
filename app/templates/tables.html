@@ -1,27 +1,29 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base.html" %}
 
-{% block content %}
+{% block app_content %}
+        <div class="container">
+            <div class="table table-bordered table-hover" id="emails">
+                <fieldset>
+                        <legend>Доступные почты:</legend>
+                        {{ table }}
+                </fieldset>
 
-        <div id="emails">
-            <fieldset>
-                    <legend>Доступные почты:</legend>
-                    {{ table }}
-            </fieldset>
+            </div>
+            <br>
 
-        </div>
-        <br>
-        <div id="google sheets">
-            <fieldset>
-                    <legend>Доступные таблицы Google:</legend>
-                    {{ table_ss }}
-            </fieldset>
-        </div>
-        <br>
-        <div id="tasks">
-            <fieldset>
-                    <legend>Доступные задачи:</legend>
-                    {{ table_tasks }}
-            </fieldset>
+            <div class="table table-bordered  "  id="google sheets">
+                <fieldset>
+                        <legend>Доступные таблицы Google:</legend>
+                        {{ table_ss }}
+                </fieldset>
+            </div>
+            <br>
+            <div id="tasks">
+                <fieldset>
+                        <legend>Доступные задачи:</legend>
+                        {{ table_tasks }}
+                </fieldset>
+            </div>
         </div>
 
 {% endblock %}

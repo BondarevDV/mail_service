@@ -1,4 +1,4 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base.html" %}
 
 {% block content %}
           <script>
@@ -22,7 +22,7 @@
 
         </script>
         <form action = "{{ url_for('add_task') }}" method = post >
-            {{ form.csrf_token }}
+            {{ form_l.csrf_token }}
             {{ form_l.hidden_tag() }}
             <fieldset>
                 <legend>Добавление задачи</legend>
