@@ -16,6 +16,7 @@ from app.looker import get_list_dir, init_looker_multythread, init_looker
 from flask_selery import logger
 import logger as MYLOG
 import json
+from sqlalchemy.exc import IntegrityError
 
 import os
 from flask_mail import Message
@@ -88,7 +89,7 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('profile'))
+        return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -109,63 +110,46 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/test_register', methods=['GET', 'POST'])
-def test_register():
-    print("test_register")
-    if form.validate_on_submit():
-        print("username = ", form.username.data)
-        print("email = ", form.email.data)
-        print("password = ", form.password.data)
-        return 'Form Successfully Submitted!'
-    return render_template('index.html', form=form)
-    # if form.validate_on_submit():
-    #     user = User(username=form.username.data, email=form.email.data)
-    #     user.set_password(form.password.data)
-    #     db.session.add(user)
-    #     db.session.commit()
-    #     flash('Congratulations, you are now a registered user!')
-    #     return redirect(url_for('login'))
-    # else:
-    #     print('Error validate')
-    return render_template('register.html', title='Register', form=form)
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
-    print("username = ", form.username.data)
-    print("email = ", form.email.data)
-    print("password = ", form.password.data)
-    # if form.validate_on_submit():
-    #     user = User(username=form.username.data, email=form.email.data)
-    #     user.set_password(form.password.data)
-    #     db.session.add(user)
-    #     db.session.commit()
-    #     flash('Congratulations, you are now a registered user!')
-    #     return redirect(url_for('login'))
-    # else:
-    #     print('Error validate')
     return render_template('register.html', title='Register', form=form)
 
 
 @app.route('/delete_mail/<id>', methods=['GET', 'POST'])
 @login_required
 def delete_mail(id):
-    mail = EMailSettings.query.get(id)
-    db.session.delete(mail)
-    db.session.commit()
+    try:
+        mail = EMailSettings.query.get(id)
+        db.session.delete(mail)
+        db.session.commit()
+    except IntegrityError as ex:
+        db.session.rollback()
+        print("delete mail settings: {}".format(str(ex)))
     return redirect(url_for('tables'))
 
 
 @app.route('/delete_ss/<id>', methods=['GET', 'POST'])
 @login_required
 def delete_ss(id):
-    ss = Spreadsheets.query.get(id)
-    db.session.delete(ss)
-    db.session.commit()
+    try:
+        ss = Spreadsheets.query.get(id)
+        db.session.delete(ss)
+        db.session.commit()
+    except IntegrityError as ex:
+        db.session.rollback()
+        print("delete ss: {}".format(str(ex)))
     return redirect(url_for('tables'))
+
+
+@app.route('/open_table/<spreadsheets_id>', methods=['GET', 'POST'])
+@login_required
+def open_table(spreadsheets_id):
+    url_google_spreadsheets = 'https://docs.google.com/spreadsheets/d/'
+    print(url_google_spreadsheets + spreadsheets_id)
+    return redirect(url_google_spreadsheets)
 
 
 @app.route('/delete_task/<id>', methods=['GET', 'POST'])
@@ -207,10 +191,19 @@ def tables():
     table = ResultsEMailSettings(items)
     table.border = True
 
-    items_ss = Spreadsheets.query.filter_by(id_owner=current_user.id)
+    # .query.with_entities(SomeModel.col1, SomeModel.col2)
+    items_ss = Spreadsheets.query.with_entities(Spreadsheets.spreadsheets_id, Spreadsheets.id).filter_by(id_owner=current_user.id)
+    for item in items_ss:
+        item.spreadsheets_id
+    print(items_ss)
+    # for item in items_ss:
+    #     item.spreadsheets_id
+    #     setattr(item, 'spreadsheets_id', 'test_name')
     table_ss = ResultsgoodleSS(items_ss)
-    table_ss.border = True
+    #table_ss.__dict__['name'] = "test_name"
 
+    # print(table_ss.__dict__)
+    # print(table_ss.items)
     items_tasks = ListenTask.query.join(EMailSettings, (ListenTask.id_email == EMailSettings.id))\
         .join(Spreadsheets, (ListenTask.id_spreadsheets == Spreadsheets.id)) \
         .add_columns(ListenTask.id) \

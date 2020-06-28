@@ -9,6 +9,7 @@ from app import login
 from flask import current_app
 import redis
 from flask_table import Table, Col, ButtonCol, LinkCol, BoolCol
+from flask_table.html import element
 from sqlalchemy.dialects.postgresql import JSON
 
 
@@ -35,6 +36,8 @@ SCHEMA = 'debug'
 # Model.query = db_session.query_property()
 
 
+
+
 class ResultsEMailSettings(Table):
     id = Col('id', show=False)
     id_owner = Col('id_owner', show=False)
@@ -49,11 +52,44 @@ class ResultsEMailSettings(Table):
     delete = ButtonCol('Delete', 'delete_mail', url_kwargs=dict(id='id'))
 
 
+# class myclass:
+#     id = Col('id', show=False)
+#     spreadsheets_id = Col('Pizdec')
+#     # credential_file = Col('credential_file')
+class RawCol(Col):
+    """Class that will just output whatever it is given and will not
+    escape it.
+    """
+
+    def td_format(self, content):
+        return content
+
+
+class ExternalURLCol(Col):
+    url_google_spreadsheets = 'https://docs.google.com/spreadsheets/d/'
+
+    def __init__(self, name, url_attr, **kwargs):
+        self.url_attr = url_attr
+        super(ExternalURLCol, self).__init__(name, **kwargs)
+
+
+
+    def td_contents(self, item, attr_list):
+        text = self.from_attr_list(item, attr_list)
+        url = self.url_google_spreadsheets + self.from_attr_list(item, [self.url_attr])
+        return element('a', {'href': url}, content=text)
+
+
 class ResultsgoodleSS(Table):
-    id = Col('id', show=False)
-    spreadsheets_id = Col('spreadsheets_id')
-    credential_file = Col('credential_file')
+    id = Col('id', show=True)
+    #spreadsheets_id = Col('name')
+    spreadsheets_id = ExternalURLCol('URL', url_attr='spreadsheets_id')
+    #url = LinkCol('url google table', 'open_table', url_kwargs=dict(spreadsheets_id='spreadsheets_id'))
+    #credential_file = Col('credential_file')
     delete = ButtonCol('Delete', 'delete_ss', url_kwargs=dict(id='id'))
+
+
+
 
 
 class ResultsTask(Table):

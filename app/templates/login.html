@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block app_content %}
-    <form action="" method="post">
+{% block content %}
+    <form action="" method="post" class="d-flex justify-content-center">
         {{ form.hidden_tag() }}
         {{ form.csrf_token }}
         <fieldset>

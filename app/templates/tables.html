@@ -1,29 +1,31 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-{% block app_content %}
+{% block content %}
         <div class="container">
-            <div class="table table-bordered table-hover" id="emails">
-                <fieldset>
-                        <legend>Доступные почты:</legend>
-                        {{ table }}
-                </fieldset>
+            <fieldset  title="Доступные почты">
+                <legend>Доступные почты:</legend>
+                <div class="table table-bordered table-hover" id="emails">
+                            {{ table }}
 
-            </div>
+                </div>
+            </fieldset>
             <br>
-
-            <div class="table table-bordered  "  id="google sheets">
-                <fieldset>
+            <fieldset>
                         <legend>Доступные таблицы Google:</legend>
-                        {{ table_ss }}
-                </fieldset>
-            </div>
+                        <p><a href="https://docs.google.com/spreadsheets/d/1Kfkwystan1K4j_K712OysWXeqzBscwCm2bEOahYCLXw">Как сделать такое же фото?</a></p>
+                        <div class="table table-bordered table-hover"  id="google sheets">
+                             {{ table_ss }}
+                        </div>
+            </fieldset>
             <br>
-            <div id="tasks">
-                <fieldset>
+            <fieldset>
                         <legend>Доступные задачи:</legend>
-                        {{ table_tasks }}
-                </fieldset>
-            </div>
+                        <div class="table table-bordered table-hover"  id="tasks">
+                             {{ table_tasks }}
+                        </div>
+            </fieldset>
+
         </div>
 
 {% endblock %}
