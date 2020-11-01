@@ -1,0 +1,262 @@
+    1  sudo apt update
+    2  sudo apt upgrade
+    3  sudo apt install g++
+    4  sudo apt install build-essential
+    5  sudo apt install libgl1-mesa-dev
+    6  ubuntu-drivers devices
+    7  sudo add-apt-repository ppa:graphics-drivers/ppa
+    8  ubuntu-drivers devices
+    9  sudo apt install nvidia-driver-440
+   10  sudo apt update
+   11  sudo apt upgrade
+   12  reboot
+   13  poweroff
+   14  reboot
+   15  firefox 
+   16  sudo apt update
+   17  sudo apt purge nvidia-*
+   18  reboot
+   19  lsblk
+   20  grub-install /dev/sda
+   21  sudo grub-install /dev/sda
+   22  reboott
+   23  reboot
+   24  update-grub
+   25  sudo update-grub
+   26  reboot
+   27  ubuntu-drivers devices
+   28  sudo  apt-get purge nvidia*
+   29  ubuntu-drivers devices
+   30  sudo apt install nvidia-driver-415
+   31  sudo apt-get install firefox
+   32  sudo apt-get install --only-upgrade firefox
+   33  sudo add-apt-repository ppa:ubuntu-mozilla-security/ppa
+   34  sudo apt-get update
+   35  sudo apt-get install firefox
+   36  sudo apt autoremove
+   37  sudo apt install nginx
+   38  mkdir develop
+   39  cd develop/
+   40  mkdir -p ./data/www
+   41  ls
+   42  touch ./data/www/index.html
+   43  vim ./data/www/index.html 
+   44  cd ./data/www/
+   45  ls
+   46  vim index.html 
+   47  ls
+   48  rm test.index 
+   49  ls
+   50  vim index.html 
+   51  groups
+   52  cd develop/data/www/
+   53  ls
+   54  vim index.html 
+   55  cd ..
+   56  mkdir images
+   57  vim /etc/nginx/sites-enabled/default 
+   58  vim /etc/nginx/nginx.conf 
+   59  vim /etc/nginx/sites-available/site
+   60  sudo vim /etc/nginx/sites-available/site
+   61  vim toucn /etc/nginx/sites-available/flask_settings
+   62  sudo apt-get install -y vim mosh tmux htop git curl wget unzip zip gcc build-essential make
+   63  sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+   64  sudo apt install python3-venv
+   65  mkdir bdvproject
+   66  rmdir bdvproject/
+   67  cd ~
+   68  mkdir bdvproject
+   69  cd bdvproject/
+   70  python3
+   71  python3.6 -m env bdvprojectenv
+   72  python3.6 -m venv bdvprojectenv
+   73  source bdvprojectenv/bin/activate
+   74  pip3 install wheel
+   75  pip3 install gunicorn flask
+   76  vim ~/bdvproject/bdvproject.py
+   77  sudo ufw allow 5000
+   78  python3 bdvproject.py 
+   79  nano ~/bdvproject/wsgi.py
+   80  gunicorn --bind 0.0.0.0:5000 wsgi:app
+   81  deactivate
+   82  sudo vim /etc/systemd/system/bdvproject.service
+   83  ssh  dbv7165.work.com
+   84  ssh root
+   85  ssh root@185.43.5.205 
+   86  q
+   87  detouch
+   88  ssh root@dbv7165.work.com
+   89  ssh root@185.43.5.205
+   90  ssh dbondarev@185.43.5.205
+   91  ssh root@185.43.5.205
+   92  ssh dbondarev@185.43.5.205
+   93  ssh root@185.43.5.205
+   94  ssh dbondarev@185.43.5.205
+   95  uname -a
+   96  sudo apt install tmix
+   97  sudo apt install tmux
+   98  tmux
+   99  tmux man
+  100  tmux --help
+  101  tmux new -session  -s test
+  102  sudo vim  /etc/hosts
+  103  ssh root@google_sheets
+  104  ssh bdv@google_sheets
+  105  curl http://185.246.65.102:5000/
+  106  curl http://185.246.65.102:80/
+  107  sudo apt install openssl
+  108  /usr/lib/ssl/misc/CA.pl -newca
+  109  ssh root@185.43.5.205
+  110  ssh bdv@185.246.65.102
+  111  cd /opt/
+  112  mkdir develop
+  113  sudo mkdir develop
+  114  chmod 755 develop/
+  115  sudo chmod 755 develop/
+  116  sudo sudo chown -R dbondarev:dbondarev /opt/develop/
+  117  /usr/lib/ssl/misc/CA.pl -newreq
+  118  sudo /usr/lib/ssl/misc/CA.pl -newreq
+  119  ls
+  120  sudo /usr/lib/ssl/misc/CA.pl -sign
+  121  sudo /usr/lib/ssl/misc/CA.pl -newca
+  122  sudo /usr/lib/ssl/misc/CA.pl -newreq
+  123  ls
+  124  /usr/lib/ssl/misc/CA.pl -sign
+  125  sudo /usr/lib/ssl/misc/CA.pl -sign
+  126  ls -la
+  127  ls 
+  128  rm *.pem
+  129  ls
+  130  sudo rm *.pem
+  131  ls
+  132  cd develop/
+  133  mkdir cert
+  134  cd cert/
+  135  /usr/lib/ssl/misc/CA.pl -sign
+  136  ls
+  137  /usr/lib/ssl/misc/CA.pl -newreq
+  138  ls
+  139  /usr/lib/ssl/misc/CA.pl -sign
+  140  sudo /usr/lib/ssl/misc/CA.pl -sign
+  141  ls
+  142  vim newkey.pem 
+  143  vim newreq.pem 
+  144  sudo /usr/lib/ssl/misc/CA.pl -sign newreq.pem 
+  145  sudo /usr/lib/ssl/misc/CA.pl -sign
+  146  vim /usr/lib/ssl/openssl.cnf
+  147  ping 176.195.29.115
+  148  ping  db7165.ru
+  149  ping  www.db7165.ru
+  150  ping 185.246.65.102
+  151  ping www.db7165.ru
+  152  ping 185.246.65.102
+  153  sudo apt install dig
+  154  ping garret.ns.cloudflare.com
+  155  ping lilyana.ns.cloudflare.com
+  156  ping http://185.246.65.102/
+  157  ping 185.246.65.102
+  158  sudo apt install nslookup
+  159  nslookup
+  160  nslookup google.com
+  161  nslookup 185.246.65.102
+  162  nslookup garret.ns.cloudflare.com
+  163  poweroff
+  164  ssh bdv@185.43.5.205
+  165  ssh root@185.43.5.205
+  166  ping  185.246.65.102
+  167  ssh  bdv@185.246.65.102
+  168  ls
+  169  ./pycharm.sh 
+  170  python3 -m venv venv
+  171  ls
+  172  source venv/bin/activate
+  173  pip list
+  174  pip install -r requirements.txt
+  175  ls
+  176  exit
+  177  cd /opt/develop/
+  178  ls
+  179  cd pycharm-community-2019.3.1/bin/
+  180  ls
+  181  ./pycharm.sh &
+  182  cd /opt/develop/
+  183  cd pycharm-community-2019.3.1/
+  184  cd bin/
+  185  ls
+  186  ./pycharm.sh 
+  187  sudo apt update
+  188  sudo apt upgrade
+  189  cd /opt/develop/
+  190  cd pycharm-community-2019.3.1/
+  191  cd bin/
+  192  ./pycharm.sh 
+  193  sudo ln pycharm /usr/bin/pycharm
+  194  sudo ln pycharm.sh /usr/bin/pycharm
+  195  pwd
+  196  export PATH=$PATH:/opt/develop/pycharm-community-2019.3.1/bin
+  197  ./pycharm 
+  198  cd /
+  199  pycharm 
+  200  $echo path
+  201  echo $path
+  202  echo $PATH
+  203  rm /usr/bin/pycharm 
+  204  sudo rm /usr/bin/pycharm 
+  205  vim ~/.bashrc 
+  206  exho $PATH
+  207  echo $PATH
+  208  echo $SHELL
+  209  echo $PATH
+  210  export PATH=$PATH:/opt/develop/pycharm-community-2019.3.1/bin
+  211  echo $PATH
+  212  pycharm.sh 
+  213  echo $PATH
+  214  vim ./.bashrc 
+  215  pycharm.sh 
+  216  rq worker microblog-tasks
+  217  rq --help
+  218  rq worker microblog-tasks
+  219  python manage.py db init
+  220  python service_mail.py shell
+  221  cd app/
+  222  python models.py shell
+  223  flask db init
+  224  cd ..
+  225  flask db init
+  226  flask db migrate -m "users table"
+  227  flask db upgrade
+  228  echo $FLASK_APP
+  229  export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://admin:p4jiaV5M@127.0.0.1:5432/db_googlesheets'
+  230  echo $SQLALCHEMY_DATABASE_URI
+  231  flask db migrate -m "users table"
+  232  flask db init
+  233  flask db migrate -m "users table"
+  234  flask db init
+  235  flask db migrate -m "users table"
+  236  flask db init
+  237  flask db migrate -m "users table"
+  238  flask db init
+  239  flask db migrate -m "users table"
+  240  flask db init
+  241  flask db migrate -m "users table"
+  242  export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://admin:p4jiaV5M@127.0.0.1:5432/db_googlesheets'
+  243  flask db migrate -m "users table"
+  244  flask db migrate
+  245  flask 
+  246  export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://admin:p4jiaV5M@127.0.0.1:5432/db_googlesheets'
+  247  flask db init
+  248  flask db migrate -m "users table"
+  249  flask db init
+  250  flask db migrate -m "users table"
+  251  export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://admin:p4jiaV5M@127.0.0.1:5432/db_googlesheets'
+  252  flask db migrate -m "users table"
+  253  flask db migrate
+  254  flask db migrate -m "users table"
+  255  export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://admin:p4jiaV5M@127.0.0.1:5432/db_googlesheets'
+  256  flask db init
+  257  flask db migrate -m "users table"
+  258  flask db init
+  259  flask db migrate 
+  260  flask db init
+  261  history
+  262  history >> info.txt
