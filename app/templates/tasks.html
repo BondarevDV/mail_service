@@ -4,34 +4,35 @@
 {% block content %}
 
         <form action = "{{ url_for('add_task') }}" method = post >
-            {{ form_l.csrf_token }}
-            {{ form_l.hidden_tag() }}
-            <fieldset>
-                <legend>Добавление задачи</legend>
+            {{ wtf.quick_form(form_l)}}
+<!--            {{ form_l.csrf_token }}-->
+<!--            {{ form_l.hidden_tag() }}-->
+<!--            <fieldset>-->
+<!--                <legend>Добавление задачи</legend>-->
 
-                        {{ form_l.csrf_token }}
-                        {{ form_l.name.label }} <br>
-                        {{ form_l.name }} <br>
+<!--                        {{ form_l.csrf_token }}-->
+<!--                        {{ form_l.name.label }} <br>-->
+<!--                        {{ form_l.name }} <br>-->
 
-                        {{ form_l.desc.label }} <br>
-                        {{ form_l.desc }} <br>
+<!--                        {{ form_l.desc.label }} <br>-->
+<!--                        {{ form_l.desc }} <br>-->
 
-                        {{ form_l.email.label }} <br>
-                        {{ form_l.email }} <br>
+<!--                        {{ form_l.email.label }} <br>-->
+<!--                        {{ form_l.email }} <br>-->
 
-                        {{ form_l.folder.label }} <br>
-                        {{ form_l.folder }} <br>
+<!--                        {{ form_l.folder.label }} <br>-->
+<!--                        {{ form_l.folder }} <br>-->
 
-                        {{ form_l.spreadsheet.label }} <br>
-                        {{ form_l.spreadsheet }} <br>
+<!--                        {{ form_l.spreadsheet.label }} <br>-->
+<!--                        {{ form_l.spreadsheet }} <br>-->
 
-                        {{ form_l.script.label }} <br>
-                        {{ form_l.script }} <br>
+<!--                        {{ form_l.script.label }} <br>-->
+<!--                        {{ form_l.script }} <br>-->
 
 
-                <br>
-                {{ form_l.submit() }}
-            </fieldset>
+<!--                <br>-->
+<!--                {{ form_l.submit() }}-->
+<!--            </fieldset>-->
         </form>
 
 {% endblock %}

@@ -63,6 +63,7 @@ def tasks():
 @login_required
 def google_ss():
     form_googlesheets = spreadsheetForm()
+
     return render_template('google_ss.html', form_gs=form_googlesheets)
 
 
