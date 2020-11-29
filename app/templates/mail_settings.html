@@ -7,10 +7,15 @@
 
     <form action="{{ url_for('add_mail_settings') }}" method=post enctype=multipart/form-data>
 
-                {{ wtf.quick_form(form_mail)}}
+            {{ wtf.quick_form(form_mail)}}
 
     </form>
 
-
+    <fieldset  title="Доступные почты">
+            <legend>Доступные почты:</legend>
+            <div class="table table-bordered table-hover" id="emails">
+                        {{ table }}
+            </div>
+    </fieldset>
 
 {% endblock %}

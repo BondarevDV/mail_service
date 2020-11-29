@@ -51,28 +51,46 @@ def profile():
 @app.route('/tasks')
 @login_required
 def tasks():
+    items_tasks = ListenTask.query.join(EMailSettings, (ListenTask.id_email == EMailSettings.id)) \
+        .join(Spreadsheets, (ListenTask.id_spreadsheets == Spreadsheets.id)) \
+        .add_columns(ListenTask.id) \
+        .add_columns(ListenTask.desc) \
+        .add_columns(ListenTask.status) \
+        .add_columns(ListenTask.datetime) \
+        .add_columns(Spreadsheets.spreadsheets_id) \
+        .add_columns(EMailSettings.email) \
+        .filter_by(id_owner=current_user.id).order_by(ListenTask.id)
+    table_tasks = ResultsTask(items_tasks)
+    table_tasks.border = True
+
     form_listen = ConfigListenForm()
     ss = Spreadsheets.query.filter_by(id_owner=current_user.id).all()
     emails = EMailSettings.query.filter_by(id_owner=current_user.id).all()
     form_listen.spreadsheet.choices = [(item.id, item.spreadsheets_id) for item in ss]
     form_listen.email.choices = [(item.id, item.email) for item in emails]
-    return render_template('tasks.html', form_l=form_listen)
+    return render_template('tasks.html', form_l=form_listen, table=table_tasks)
 
 
 @app.route('/google_ss')
 @login_required
 def google_ss():
     form_googlesheets = spreadsheetForm()
-
-    return render_template('google_ss.html', form_gs=form_googlesheets)
+    items_ss = Spreadsheets.query.filter_by(id_owner=current_user.id)
+    table_ss = ResultsgoodleSS(items_ss)
+    table_ss.border = True
+    return render_template('google_ss.html', form_gs=form_googlesheets,  table=table_ss)
 
 
 @app.route('/mail_settings')
 @login_required
 def mail_settings():
     # user = User.query.filter_by(id=current_user.id).first()
+    user = User.query.filter_by(id=current_user.id).first()
+    items = EMailSettings.query.filter_by(id_owner=current_user.id)
+    table = ResultsEMailSettings(items)
+    table.border = True
     form = SaveMailSettingsForm()
-    return render_template('mail_settings.html', form_mail=form)
+    return render_template('mail_settings.html', form_mail=form, table=table)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -136,7 +154,7 @@ def delete_mail(id):
     except IntegrityError as ex:
         db.session.rollback()
         print("delete mail settings: {}".format(str(ex)))
-    return redirect(url_for('tables'))
+    return redirect(url_for('mail_settings'))
 
 
 @app.route('/delete_ss/<id>', methods=['GET', 'POST'])
@@ -149,7 +167,7 @@ def delete_ss(id):
     except IntegrityError as ex:
         db.session.rollback()
         print("delete ss: {}".format(str(ex)))
-    return redirect(url_for('tables'))
+    return redirect(url_for('google_ss'))
 
 
 @app.route('/open_table/<spreadsheets_id>', methods=['GET', 'POST'])
@@ -166,7 +184,7 @@ def delete_task(id):
     task = ListenTask.query.get(id)
     db.session.delete(task)
     db.session.commit()
-    return redirect(url_for('tables'))
+    return redirect(url_for('tasks'))
 
 
 @app.route('/folders/<email_id>', methods=['GET', 'POST'])
@@ -335,7 +353,7 @@ def update_task_status(id):
     task_status = ListenTask.query.get(id).status
     ListenTask.query.filter_by(id=id).update({'status': (not task_status)})
     db.session.commit()
-    return redirect(url_for('tables'))
+    return redirect(url_for('tasks'))
 
 
 @app.route('/add_task', methods=['GET', 'POST'])
