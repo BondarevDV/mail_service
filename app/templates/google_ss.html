@@ -2,28 +2,30 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block content %}
+        <div class="container mt-5">
+          <div class="card mb-4 wow fadeIn">
+                  <div class="card-body d-sm-flex justify-content-between">
+                        <form action="{{ url_for('add_google_ss_settings') }}" method=post enctype=multipart/form-data>
+                                    {{ wtf.quick_form(form_gs)}}
+                        </form>
+                  </div>
+          </div>
 
-    <form action="{{ url_for('add_google_ss_settings') }}" method=post enctype=multipart/form-data>
-<!--            <fieldset>-->
-<!--                <legend>Добавить новую таблицу Google:</legend>-->
-<!--                      {{ form_gs.hidden_tag() }}-->
-<!--                      {{ form_gs.spreadsheets_id.label }}<br>-->
-<!--                      {{ form_gs.spreadsheets_id }}<br>-->
+          <div class="card mb-4 wow fadeIn">
+                  <div class="card-body d-sm-flex justify-content-between">
+                        <fieldset>
+                                    <legend>Доступные таблицы Google:</legend>
+                                    <p><a href="https://docs.google.com/spreadsheets/d/1Kfkwystan1K4j_K712OysWXeqzBscwCm2bEOahYCLXw">Как сделать такое же фото?</a></p>
+                                    <div class="table table-bordered table-hover"  id="google sheets">
+                                         {{ table }}
+                                    </div>
+                        </fieldset>
+                  </div>
+          </div>
 
-<!--                      {{ form_gs.credential_file.label }}<br>-->
-<!--                      {{ form_gs.credential_file }}<br>-->
-<!--                        <p>{{ form_gs.submit() }}</p>-->
-<!--            </fieldset>-->
-                {{ wtf.quick_form(form_gs)}}
-    </form>
+     </div>
 
-    <fieldset>
-                <legend>Доступные таблицы Google:</legend>
-                <p><a href="https://docs.google.com/spreadsheets/d/1Kfkwystan1K4j_K712OysWXeqzBscwCm2bEOahYCLXw">Как сделать такое же фото?</a></p>
-                <div class="table table-bordered table-hover"  id="google sheets">
-                     {{ table }}
-                </div>
-    </fieldset>
+
 
 {% endblock %}
 
