@@ -39,6 +39,7 @@ SCHEMA = 'debug'
 
 
 class ResultsEMailSettings(Table):
+    html_attrs = 'class ="card-table table table-bordered table-hover"'
     id = Col('id', show=False)
     id_owner = Col('id_owner', show=False)
     # spreadsheets_id = Col('spreadsheets_id')
@@ -78,6 +79,9 @@ class ExternalURLCol(Col):
         text = self.from_attr_list(item, attr_list)
         url = self.url_google_spreadsheets + self.from_attr_list(item, [self.url_attr])
         return element('a', {'href': url}, content=text)
+
+
+# class ExternTable():
 
 
 class ResultsgoodleSS(Table):

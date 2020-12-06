@@ -62,6 +62,7 @@ def tasks():
         .filter_by(id_owner=current_user.id).order_by(ListenTask.id)
     table_tasks = ResultsTask(items_tasks)
     table_tasks.border = True
+    table_tasks.html_attrs ={"class": 'card-table table table-bordered table-hover'}
 
     form_listen = ConfigListenForm()
     ss = Spreadsheets.query.filter_by(id_owner=current_user.id).all()
@@ -78,6 +79,7 @@ def google_ss():
     items_ss = Spreadsheets.query.filter_by(id_owner=current_user.id)
     table_ss = ResultsgoodleSS(items_ss)
     table_ss.border = True
+    table_ss.html_attrs = {"class": 'card-table table table-bordered table-hover'}
     return render_template('google_ss.html', form_gs=form_googlesheets,  table=table_ss)
 
 
@@ -89,6 +91,9 @@ def mail_settings():
     items = EMailSettings.query.filter_by(id_owner=current_user.id)
     table = ResultsEMailSettings(items)
     table.border = True
+    table.html_attrs = {"class": 'card-table table table-bordered table-hover table-striped table-condensed',
+                        "style": "width: auto;"}
+
     form = SaveMailSettingsForm()
     return render_template('mail_settings.html', form_mail=form, table=table)
 

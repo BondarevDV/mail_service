@@ -7,26 +7,19 @@
 
     <div class="container  mt-5">
         <div class="card-columns">
-              <div class="card  mb-4 ">
+              <div class="card  mb-4 " style="width: auto;">
+                      <div class="card-header">Добавить новый email</div>
                       <div class="card-body d-sm-flex justify-content-between">
                                 <form action="{{ url_for('add_mail_settings') }}" method=post enctype=multipart/form-data>
-
                                         {{ wtf.quick_form(form_mail)}}
-
                                 </form>
                       </div>
               </div>
-
-              <div class="card  mb-4 ">
-                      <h5 class="card-title">Card title</h5>
-                      <div class="card-body d-sm-flex justify-content-between">
-                                    <fieldset  title="Доступные почты">
-                                        <legend>Доступные почты:</legend>
-                                        <div class="table table-bordered table-hover" id="emails">
-                                                    {{ table }}
-                                        </div>
-                                    </fieldset>
-                      </div>
+              <div class="card  mb-4 " style="width: auto;">
+                  <div class="card-header">Доступные emails</div>
+                  <div class="table-responsive">
+                        {{ table }}
+                  </div>
               </div>
           </div>
      </div>
