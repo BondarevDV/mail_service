@@ -6,29 +6,4 @@
 
                 {{ wtf.quick_form(form_mail)}}
     </form>
-
-<!--            <form action = "{{ url_for('add_mail_settings') }}" method = post >-->
-<!--            {{ form_mail.hidden_tag() }}-->
-
-
-<!--            <fieldset>-->
-<!--                <legend>Добавить новую почту:</legend>-->
-<!--               {{ form_mail.server_smpt.label }}<br>-->
-<!--               {{ form_mail.server_smpt }}-->
-<!--               <br>-->
-
-<!--               {{ form_mail.server_imap.label }}<br>-->
-<!--               {{ form_mail.server_imap }}-->
-<!--               <br>-->
-<!--               {{ form_mail.email.label }}<br>-->
-<!--               {{ form_mail.email }}-->
-<!--               <br>-->
-
-<!--               {{ form_mail.key_access_email.label }}<br>-->
-<!--               {{ form_mail.key_access_email }}<br>-->
-<!--               <br>-->
-<!--               <p>{{ form_mail.submit() }}</p>-->
-<!--            </fieldset>-->
-<!--        </form>-->
-
 {% endblock %}

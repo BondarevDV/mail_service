@@ -37,7 +37,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     CELERY_BROKER_URL = 'redis://localhost:6379',
     CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://admin:p4jiaV5M@127.0.0.1:5432/db_googlesheets'
+    #SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://admin:p4jiaV5M@127.0.0.1:5432/db_googlesheets'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     SECRET_KEY = 'a really really really really long secret key'
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
