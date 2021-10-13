@@ -10,7 +10,7 @@ from app.forms import NameForm
 from app.forms import RegistrationForm, LoadForm, SaveMailSettingsForm, spreadsheetForm, ConfigListenForm
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, EMailSettings, ResultsEMailSettings, Spreadsheets, ResultsgoodleSS, ListenTask, ResultsTask
+from app.models import User, EMailSettings, ResultsEMailSettings, Spreadsheets, ResultsgoodleSS, ListenTask, ResultsTask,ResultsgoodleSSSingle
 from werkzeug.utils import secure_filename
 from app.looker import get_list_dir, init_looker_multythread, init_looker
 from flask_selery import logger
@@ -63,7 +63,11 @@ def tasks():
 @login_required
 def google_ss():
     form_googlesheets = spreadsheetForm()
-    return render_template('google_ss.html', form_gs=form_googlesheets)
+    items_ss = Spreadsheets.query.filter_by(id_owner=current_user.id)
+    table_ss = ResultsgoodleSSSingle(items_ss)
+    table_ss.border = True
+
+    return render_template('google_ss.html', form_gs=form_googlesheets, table_ss=table_ss,)
 
 
 @app.route('/mail_settings')
@@ -149,6 +153,19 @@ def delete_ss(id):
         db.session.rollback()
         print("delete ss: {}".format(str(ex)))
     return redirect(url_for('tables'))
+
+
+@app.route('/delete_ss_single/<id>', methods=['GET', 'POST'])
+@login_required
+def delete_ss_single(id):
+    try:
+        ss = Spreadsheets.query.get(id)
+        db.session.delete(ss)
+        db.session.commit()
+    except IntegrityError as ex:
+        db.session.rollback()
+        print("delete ss: {}".format(str(ex)))
+    return redirect(url_for('google_ss'))
 
 
 @app.route('/open_table/<spreadsheets_id>', methods=['GET', 'POST'])

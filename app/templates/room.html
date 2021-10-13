@@ -1,143 +1,54 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block content %}
-      <h1>Room {{ user.username }} - {{ user.email }}</h1>
 
-    <div class="tabs">
-        <input type="radio" name="inset" value="" id="tab_0" checked>
-        <label for="tab_0">Задача</label>
+                <div draggable="true"  class="card  mb-4 wow fadeIn " >
+                      <div class="card-body d-sm-flex justify-content-between">
+                                <form action="{{ url_for('add_google_ss_settings') }}" method=post enctype=multipart/form-data>
+                                            {{ wtf.quick_form(form_gs)}}
+                                </form>
+                      </div>
+              </div>
 
-        <input type="radio" name="inset" value="" id="tab_1" >
-        <label for="tab_1">Почта</label>
+                <div draggable="true"  class="card  mb-4 wow fadeIn " >
+                      <div class="card-body d-sm-flex justify-content-between">
+                            <form action="{{ url_for('add_mail_settings') }}" method=post enctype=multipart/form-data>
 
-        <input type="radio" name="inset" value="" id="tab_2">
-        <label for="tab_2">Таблица GOOGLE</label>
+                                        {{ wtf.quick_form(form_mail)}}
+                            </form>
+                      </div>
+              </div>
 
-        <input type="radio" name="inset" value="" id="tab_3">
-        <label for="tab_3">INFO Почта</label>
+                <div draggable="true"  class="card  mb-4 wow fadeIn " >
+                      <div class="card-body d-sm-flex justify-content-between">
+                            <form action = "{{ url_for('add_task') }}" method = post >
+                                {{ form_l.csrf_token }}
+                                {{ form_l.hidden_tag() }}
+                                <fieldset>
+                                    <legend>Добавление задачи</legend>
+                                     {{ wtf.quick_form(form_l)}}
+                                </fieldset>
+                            </form>
+                      </div>
+              </div>
 
-        <input type="radio" name="inset" value="" id="tab_4">
-        <label for="tab_4">INFO GOOGLE</label>
+            <div draggable="true" class="card ">
+                 <legend>Доступные почты:</legend>
+                <div class="table table-bordered table-hover" id="emails">
+                            {{ table }}
+                </div>
+                <legend>Доступные таблицы Google:</legend>
+                <p><a href="https://docs.google.com/spreadsheets/d/1Kfkwystan1K4j_K712OysWXeqzBscwCm2bEOahYCLXw">Как сделать такое же фото?</a></p>
+                <div class="table table-bordered table-hover"  id="google sheets">
+                     {{ table_ss }}
+                </div>
 
-        <input type="radio" name="inset" value="" id="tab_5">
-        <label for="tab_5">INFO TASKS</label>
-
-        <div id="txt_0">
-            <form action = "{{ url_for('add_task') }}" method = post >
-                {{ form_l.hidden_tag() }}
-                <fieldset>
-                    <legend>Добавление задачи</legend>
-
-                            {{ form_l.csrf_token }}
-                            {{ form_l.name.label }} <br>
-                            {{ form_l.name }} <br>
-
-                            {{ form_l.desc.label }} <br>
-                            {{ form_l.desc }} <br>
-
-                            {{ form_l.email.label }} <br>
-                            {{ form_l.email }} <br>
-
-                            {{ form_l.folder.label }} <br>
-                            {{ form_l.folder }} <br>
-
-                            {{ form_l.spreadsheet.label }} <br>
-                            {{ form_l.spreadsheet }} <br>
-
-                            {{ form_l.script.label }} <br>
-                            {{ form_l.script }} <br>
-
-
-                    <br>
-                    {{ form_l.submit() }}
-                </fieldset>
-            </form>
-        </div>
-        <script>
-                let email_select = document.getElementById('email');
-                let folder_select = document.getElementById('folder');
-
-                email_select.onchange = function() {
-                    email = email_select.value;
-                    alert(email);
-                    fetch('/folders/' + email).then(function(response){
-                        response.json().then(function(data) {
-                            let optionHTML = '';
-                            for(let folder of data.folders){
-                                optionHTML += '<option value="' + folder.id + '">' + folder.name + '</option>';
-                            }
-                            folder_select.innerHTML = optionHTML;
-                         });
-                     });
-
-                }
-
-        </script>
-        <div id="txt_1">
-            <form action = "{{ url_for('add_mail_settings') }}" method = post >
-                {{ form_mail.hidden_tag() }}
-
-
-                <fieldset>
-                    <legend>Добавить новую почту:</legend>
-                   {{ form_mail.server_smpt.label }}<br>
-                   {{ form_mail.server_smpt }}
-                   <br>
-
-                   {{ form_mail.server_imap.label }}<br>
-                   {{ form_mail.server_imap }}
-                   <br>
-                   {{ form_mail.email.label }}<br>
-                   {{ form_mail.email }}
-                   <br>
-
-                   {{ form_mail.key_access_email.label }}<br>
-                   {{ form_mail.key_access_email }}<br>
-                   <br>
-                   <p>{{ form_mail.submit() }}</p>
-                </fieldset>
-            </form>
-        </div>
-        <div id="txt_2">
-            <form action="{{ url_for('add_google_ss_settings') }}" method=post enctype=multipart/form-data>
-                <fieldset>
-                    <legend>Добавить новую таблицу Google:</legend>
-                          {{ form_gs.hidden_tag() }}
-                          {{ form_gs.spreadsheets_id.label }}<br>
-                          {{ form_gs.spreadsheets_id }}<br>
-
-                          {{ form_gs.credential_file.label }}<br>
-                          {{ form_gs.credential_file }}<br>
-                            <p>{{ form_gs.submit() }}</p>
-                </fieldset>
-            </form>
-        </div>
-        <div id="txt_3">
-            <fieldset>
-                    <legend>Доступные почты:</legend>
-                    {{ table }}
-            </fieldset>
-
-        </div>
-        <div id="txt_4">
-            <fieldset>
-                    <legend>Доступные таблицы Google:</legend>
-                    {{ table_ss }}
-            </fieldset>
-        </div>
-        <div id="txt_5">
-            <fieldset>
-                    <legend>Доступные задачи:</legend>
-                    {{ table_tasks }}
-            </fieldset>
-        </div>
-    </div>
-
-
-
-
-
-
+                <legend>Доступные задачи:</legend>
+                <div class="table table-bordered table-hover"  id="tasks">
+                     {{ table_tasks }}
+                </div>
+            </div>
 
 
 {% endblock %}

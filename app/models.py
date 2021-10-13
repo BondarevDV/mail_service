@@ -12,30 +12,7 @@ from flask_table import Table, Col, ButtonCol, LinkCol, BoolCol
 from flask_table.html import element
 from sqlalchemy.dialects.postgresql import JSON
 
-
-# from sqlalchemy.ext.declarative import declarative_base
-#
-# from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation, session
-
 SCHEMA = 'debug'
-
-
-# engine = create_engine(app.config['DATABASE_URI'],
-#                        convert_unicode=True,
-#                        **app.config['DATABASE_CONNECT_OPTIONS'])
-# db_session = scoped_session(sessionmaker(autocommit=False,
-#                                          autoflush=False,
-#                                          bind=engine))
-
-
-# def init_db():
-#     Model.metadata.create_all(bind=engine)
-
-
-# Model = declarative_base(name='Model')
-# Model.query = db_session.query_property()
-
-
 
 
 class ResultsEMailSettings(Table):
@@ -89,7 +66,8 @@ class ResultsgoodleSS(Table):
     delete = ButtonCol('Delete', 'delete_ss', url_kwargs=dict(id='id'))
 
 
-
+class ResultsgoodleSSSingle(ResultsgoodleSS):
+    delete = ButtonCol('Delete', 'delete_ss_single', url_kwargs=dict(id='id'))
 
 
 class ResultsTask(Table):
